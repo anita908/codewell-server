@@ -1,12 +1,13 @@
 version: 2.1 # using 2.1 provides access to orbs and other features
 jobs:
-  build:
+  install-node:
     docker: 
       - image: circleci/node:10.16.0
-
-    working_directory: ~/codewell-server
-    
     steps:
       - checkout
       - run: npm install
       - run: npm test
+workflows:
+  tester:
+    jobs:
+      - install-node
