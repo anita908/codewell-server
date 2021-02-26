@@ -28,7 +28,7 @@ public abstract class BaseJpaRepositoryImpl<T, P extends Serializable> implement
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseJpaRepositoryImpl.class);
 
     protected final Class<T> entityClass;
-    private final Map<Field, Integer> fieldLengths = new HashMap();
+    private final Map<Field, Integer> fieldLengths = new HashMap<>();
 
     @PersistenceContext(unitName = "entityManagerFactory")
     private EntityManager entityManager;
@@ -45,11 +45,10 @@ public abstract class BaseJpaRepositoryImpl<T, P extends Serializable> implement
         }
         this.entityClass = (Class) genericSuperclass.getActualTypeArguments()[0];
         Field[] var2 = this.entityClass.getDeclaredFields();
-        int var3 = var2.length;
-        for (int var4 = 0; var4 < var3; ++var4) {
-            Field field = var2[var4];
-            Column annotation = (Column)field.getAnnotation(Column.class);
-            Lob lob = (Lob)field.getAnnotation(Lob.class);
+        for (Field field : var2)
+        {
+            Column annotation = field.getAnnotation(Column.class);
+            Lob lob = field.getAnnotation(Lob.class);
             if (lob == null && annotation != null && annotation.length() != 255 && annotation.length() > 0 && field.getType().equals(String.class)) {
                 field.setAccessible(true);
                 this.fieldLengths.put(field, annotation.length());
@@ -114,7 +113,7 @@ public abstract class BaseJpaRepositoryImpl<T, P extends Serializable> implement
         CriteriaBuilder qb = this.entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> cq = qb.createQuery(Long.class);
         cq.select(qb.count(cq.from(this.entityClass)));
-        return (Long)this.getEntityManager().createQuery(cq).getSingleResult();
+        return this.getEntityManager().createQuery(cq).getSingleResult();
     }
 
     @Transactional(transactionManager = "transactionManager")
@@ -123,7 +122,7 @@ public abstract class BaseJpaRepositoryImpl<T, P extends Serializable> implement
         CriteriaBuilder qb = this.entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> cq = qb.createQuery(Long.class);
         cq.select(qb.count(cq.from(this.entityClass)));
-        return (Long)this.getEntityManager().createQuery(cq).getSingleResult();
+        return this.getEntityManager().createQuery(cq).getSingleResult();
     }
 
     public Object getIdentifier(Object object)
@@ -134,14 +133,11 @@ public abstract class BaseJpaRepositoryImpl<T, P extends Serializable> implement
     public Map<String, Object> createEagerLoadHintMap(String... entityNames)
     {
         EntityGraph<T> graph = this.getEntityManager().createEntityGraph(this.entityClass);
-        String[] var3 = entityNames;
-        int var4 = entityNames.length;
-        for (int var5 = 0; var5 < var4; ++var5)
+        for (String string : entityNames)
         {
-            String string = var3[var5];
             graph.addSubgraph(string);
         }
-        Map<String, Object> hints = new HashMap();
+        Map<String, Object> hints = new HashMap<>();
         hints.put("javax.persistence.loadgraph", graph);
         return hints;
     }
@@ -171,12 +167,12 @@ public abstract class BaseJpaRepositoryImpl<T, P extends Serializable> implement
 
     public SessionFactory getSessionFactory()
     {
-        return (SessionFactory) this.entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+        return this.entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
     }
 
     public SessionFactory getReadOnlySessionFactory()
     {
-        return (SessionFactory) this.entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
+        return this.entityManager.getEntityManagerFactory().unwrap(SessionFactory.class);
     }
 
     public T getReference(P id)

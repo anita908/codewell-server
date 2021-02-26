@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-@Path("v1/user")
+@Path("/v1/user")
 public class UserController
 {
     private final UserRepository userRepository;
@@ -18,13 +18,6 @@ public class UserController
     public UserController(final UserRepository userRepository)
     {
         this.userRepository = userRepository;
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String test()
-    {
-        return "Welcome to our server";
     }
 
     @POST
