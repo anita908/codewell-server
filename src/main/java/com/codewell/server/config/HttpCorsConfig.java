@@ -9,7 +9,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 
 @Configuration
-public class HttpConfig
+public class HttpCorsConfig
 {
     @Bean
     public CorsFilter corsFilter()

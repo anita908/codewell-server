@@ -10,7 +10,7 @@ public class UserEntity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
 
     @Column(name = "user_id")
     private String userId;
@@ -31,7 +31,7 @@ public class UserEntity
     private String lastName;
 
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
     @Column(name = "city")
     private String city;
@@ -45,12 +45,12 @@ public class UserEntity
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
-    public int getId()
+    public Integer getId()
     {
         return id;
     }
 
-    public void setId(int id)
+    public void setId(Integer id)
     {
         this.id = id;
     }
@@ -115,12 +115,12 @@ public class UserEntity
         this.lastName = lastName;
     }
 
-    public int getAge()
+    public Integer getAge()
     {
         return age;
     }
 
-    public void setAge(int age)
+    public void setAge(Integer age)
     {
         this.age = age;
     }
