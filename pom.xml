@@ -35,8 +35,8 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
 	<build>
+		<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -44,5 +44,5 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<packaging>jar</packaging>
 </project>
