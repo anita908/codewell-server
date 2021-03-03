@@ -17,7 +17,7 @@ jobs:
       - image: circleci/openjdk:11.0.3-jdk-stretch
     steps:
       - restore_cache:
-          key: dependency-cache-{{ checksum "pom.json" }}
+          key: dependency-cache-{{ checksum "pom.xml" }}
       - run:
           name: Run JUnit Tests
           command: mvn test
