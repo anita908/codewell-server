@@ -8,18 +8,24 @@ jobs:
       - run:
           name: Compile Java code
           command: mvn compile
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - target/
   Run Unit Tests:
     docker:
       - image: circleci/openjdk:11.0.3-jdk-stretch
     steps:
       - checkout
+      - attach_workspace:
+          at: ./target
       - run:
           name: Run JUnit Tests
           command: mvn test
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: maven-dependencies-{{ checksum "pom.xml" }}
+#      - save_cache:
+#          paths:
+#            - ~/.m2
+#          key: maven-dependencies-{{ checksum "pom.xml" }}
 #  Package JAR:
 #    docker:
 #      - image: circleci/openjdk:11.0.3-jdk-stretch
