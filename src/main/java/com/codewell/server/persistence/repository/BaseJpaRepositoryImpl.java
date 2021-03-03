@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@Transactional(transactionManager = "readOnlyTransactionManager")
+@Transactional(transactionManager = "transactionManager")
 public abstract class BaseJpaRepositoryImpl<T, P extends Serializable> implements BaseJpaRepository<T, P>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseJpaRepositoryImpl.class);
