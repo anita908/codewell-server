@@ -1,0 +1,24 @@
+branch-defaults:
+  master:
+    environment: Codewellserver-env-1
+    group_suffix: null
+environment-defaults:
+  Codewellserver-env-1:
+    branch: null
+    repository: null
+deploy:
+  artifact: target/server.jar
+global:
+  application_name: codewell-server
+  branch: null
+  default_ec2_keyname: null
+  default_platform: Tomcat 8.5 with Corretto 11 running on 64bit Amazon Linux 2
+  default_region: us-east-2
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  repository: null
+  sc: git
+  workspace_type: Application

@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  ebs: circleci/aws-elastic-beanstalk@1.0.1
 jobs:
   Compile:
     docker:
@@ -28,13 +30,24 @@ jobs:
       - restore_cache:
           key: maven-dependencies-{{ checksum "pom.xml" }}
       - run:
+          name: Compile into JAR and save in ./target folder
           command: mvn clean package -Dmaven.test.skip=true
       - persist_to_workspace:
           root: ./
           paths:
             - target
+  Deploy to EBS:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - ebs/setup
+      - attach_workspace:
+          at: ./
+      - run:
+          name: Deploy JAR
+          command: eb deploy $EBS_ENV
 workflows:
-  version: 2
   Test and Deploy:
     jobs:
       - Compile
@@ -44,3 +57,9 @@ workflows:
       - Package JAR:
           requires:
             - Run Unit Tests
+      - Deploy to EBS:
+          requires:
+            - Package JAR
+          filters:
+            branches:
+              only: master
