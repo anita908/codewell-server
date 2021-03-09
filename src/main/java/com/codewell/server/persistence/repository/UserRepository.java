@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends BaseJpaRepository<UserEntity, Long>
 {
     UserEntity selectByUserId(final String userId);
-    UserEntity selectByUsername(final String username);
 }

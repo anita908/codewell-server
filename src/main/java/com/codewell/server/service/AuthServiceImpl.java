@@ -1,10 +1,9 @@
 package com.codewell.server.service;
 
-import com.auth0.jwt.JWT;
 import com.codewell.server.dto.AuthTokenDto;
-import com.codewell.server.dto.UserDto;
-import com.codewell.server.persistence.repository.UserAuthRepository;
-import org.apache.commons.lang3.StringUtils;
+import com.codewell.server.persistence.entity.UserCredentialsEntity;
+import com.codewell.server.persistence.repository.UserCredentialsRepository;
+import com.codewell.server.persistence.repository.UserTokenRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -16,42 +15,46 @@ import java.time.OffsetDateTime;
 @Singleton
 public class AuthServiceImpl implements AuthService
 {
-    private final UserService userService;
     private final JwtService jwtService;
-    private final UserAuthRepository userAuthRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
+    private final UserTokenRepository userTokenRepository;
     private final PasswordEncoder passwordEncoder;
 
     private static final String SUCCESS = "SUCCESS";
 
     @Inject
-    public AuthServiceImpl(final UserService userService, final JwtService jwtService, final UserAuthRepository userAuthRepository, final PasswordEncoder passwordEncoder)
+    public AuthServiceImpl(final JwtService jwtService,
+                           final UserCredentialsRepository userCredentialsRepository,
+                           final UserTokenRepository userTokenRepository,
+                           final PasswordEncoder passwordEncoder)
     {
-        this.userService = userService;
         this.jwtService = jwtService;
-        this.userAuthRepository = userAuthRepository;
+        this.userCredentialsRepository = userCredentialsRepository;
+        this.userTokenRepository = userTokenRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public AuthTokenDto loginUser(final String username, final String password)
     {
-        final UserDto userDto = userService.getUserByUsername(username);
-        if (userDto == null)
+        final UserCredentialsEntity savedCredentials = userCredentialsRepository.selectByUsername(username);
+        if (savedCredentials == null)
         {
-            throw new IllegalArgumentException(String.format("User data for username: %s doesn't exist", username));
+            throw new IllegalArgumentException(String.format("Username: %s doesn't exist", username));
 
         }
-        if (!passwordEncoder.matches(password, userDto.getPassword()))
+        if (!passwordEncoder.matches(password, savedCredentials.getPassword()))
         {
             throw new IllegalArgumentException(String.format("Incorrect password for username: %s", username));
         }
         final AuthTokenDto authTokenDto = new AuthTokenDto();
         authTokenDto.setResult(SUCCESS);
-        authTokenDto.setJwt(jwtService.assignJwtToken(userDto.getUserId()));
+        authTokenDto.setJwt(jwtService.assignJwtToken(savedCredentials.getUserId()));
         authTokenDto.setTokenAssignDate(OffsetDateTime.now());
         return authTokenDto;
     }
 
+    @Override
     public AuthTokenDto refreshUser(final String userId)
     {
         return new AuthTokenDto(SUCCESS, jwtService.assignJwtToken(userId), OffsetDateTime.now());
@@ -60,10 +63,10 @@ public class AuthServiceImpl implements AuthService
     @Override
     public void logoutUser(final String username)
     {
-        final UserDto userDto = userService.getUserByUsername(username);
-        if (userDto != null)
+        final UserCredentialsEntity savedCredentials = userCredentialsRepository.selectByUsername(username);
+        if (savedCredentials != null)
         {
-            userAuthRepository.delete(userDto.getUserId());
+            userTokenRepository.delete(savedCredentials.getUserId());
         }
     }
 }
