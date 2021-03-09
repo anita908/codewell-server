@@ -7,8 +7,8 @@ import javax.persistence.Table;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "user_auth")
-public class UserAuthEntity
+@Table(name = "user_tokens")
+public class UserTokenEntity
 {
     @Id
     @Column(name = "user_id")

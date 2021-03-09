@@ -1,7 +1,8 @@
 package com.codewell.server.dto;
 
-import java.time.OffsetDateTime;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto
 {
     private Integer id;
@@ -14,8 +15,6 @@ public class UserDto
     private Integer age;
     private String city;
     private String isAdmin;
-    private OffsetDateTime createdAt;
-    private OffsetDateTime updatedAt;
 
     public static Builder newBuilder()
     {
@@ -34,8 +33,6 @@ public class UserDto
         private Integer age;
         private String city;
         private String isAdmin;
-        private OffsetDateTime createdAt;
-        private OffsetDateTime updatedAt;
 
         public Builder id(Integer id)
         {
@@ -97,18 +94,6 @@ public class UserDto
             return this;
         }
 
-        public Builder createdAt(OffsetDateTime createdAt)
-        {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Builder updatedAt(OffsetDateTime updatedAt)
-        {
-            this.updatedAt = updatedAt;
-            return this;
-        }
-
         public UserDto build()
         {
             final UserDto userDto = new UserDto();
@@ -122,8 +107,6 @@ public class UserDto
             userDto.setAge(this.age);
             userDto.setCity(this.city);
             userDto.setIsAdmin(this.isAdmin);
-            userDto.setCreatedAt(this.createdAt);
-            userDto.setUpdatedAt(this.updatedAt);
             return userDto;
         }
     }
@@ -227,25 +210,5 @@ public class UserDto
     public void setIsAdmin(String isAdmin)
     {
         this.isAdmin = isAdmin;
-    }
-
-    public OffsetDateTime getCreatedAt()
-    {
-        return createdAt;
-    }
-
-    public void setCreatedAt(OffsetDateTime createdAt)
-    {
-        this.createdAt = createdAt;
-    }
-
-    public OffsetDateTime getUpdatedAt()
-    {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(OffsetDateTime updatedAt)
-    {
-        this.updatedAt = updatedAt;
     }
 }

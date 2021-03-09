@@ -1,7 +1,10 @@
 package com.codewell.server.service;
 
 import com.codewell.server.dto.UserDto;
+import com.codewell.server.dto.UserLearningModel;
+import com.codewell.server.persistence.entity.UserCredentialsEntity;
 import com.codewell.server.persistence.entity.UserEntity;
+import com.codewell.server.persistence.repository.UserCredentialsRepository;
 import com.codewell.server.persistence.repository.UserRepository;
 import com.codewell.server.util.UserUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -22,15 +25,19 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService
 {
     private final UserRepository userRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
     private final PasswordEncoder passwordEncoder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     private static final String NOT_ADMIN = "false";
 
     @Inject
-    public UserServiceImpl(final UserRepository userRepository, final PasswordEncoder passwordEncoder)
+    public UserServiceImpl(final UserRepository userRepository,
+                           final UserCredentialsRepository userCredentialsRepository,
+                           final PasswordEncoder passwordEncoder)
     {
         this.userRepository = userRepository;
+        this.userCredentialsRepository = userCredentialsRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -39,13 +46,6 @@ public class UserServiceImpl implements UserService
     {
         LOGGER.info("Fetching user data by userId: {}", userId);
         return this.mapToUserDto(userRepository.selectByUserId(userId));
-    }
-
-    @Override
-    public UserDto getUserByUsername(final String username)
-    {
-        LOGGER.info("Fetching user data by username: {}", username);
-        return this.mapToUserDto(userRepository.selectByUsername(username));
     }
 
     @Override
@@ -65,13 +65,14 @@ public class UserServiceImpl implements UserService
             newUser.setIsAdmin(NOT_ADMIN);
         }
 
-        final OffsetDateTime now = OffsetDateTime.now();
-        newUser.setCreatedAt(now);
-        newUser.setUpdatedAt(now);
-
         final UserEntity newUserEntity = this.mapToUserEntity(newUser);
         LOGGER.info("Inserting new user into users table: {}", newUserEntity);
         userRepository.insert(newUserEntity);
+
+        final UserCredentialsEntity newCredentialsEntity = this.mapToUserCredentialsEntity(newUser);
+        LOGGER.info("Inserting new user credentials into credentials table: {}", newCredentialsEntity);
+        userCredentialsRepository.insert(newCredentialsEntity);
+
         return this.getUserById(userId);
     }
 
@@ -102,17 +103,28 @@ public class UserServiceImpl implements UserService
         final UserEntity userEntity = new UserEntity();
         userEntity.setId(userDto.getId());
         userEntity.setUserId(userDto.getUserId());
-        userEntity.setUsername(userDto.getUsername());
         userEntity.setEmail(userDto.getEmail());
-        userEntity.setPassword(userDto.getPassword());
         userEntity.setFirstName(userDto.getFirstName());
         userEntity.setLastName(userDto.getLastName());
         userEntity.setAge(userDto.getAge());
         userEntity.setCity(userDto.getCity());
         userEntity.setIsAdmin(userDto.getIsAdmin());
-        userEntity.setCreatedAt(userDto.getCreatedAt());
-        userEntity.setUpdatedAt(userDto.getUpdatedAt());
+        final OffsetDateTime currentTime = OffsetDateTime.now();
+        userEntity.setCreatedAt(currentTime);
+        userEntity.setUpdatedAt(currentTime);
         return userEntity;
+    }
+
+    private UserCredentialsEntity mapToUserCredentialsEntity(final UserDto userDto)
+    {
+        final UserCredentialsEntity userCredentialsEntity = new UserCredentialsEntity();
+        userCredentialsEntity.setUserId(userDto.getUserId());
+        userCredentialsEntity.setUsername(userDto.getUsername());
+        userCredentialsEntity.setPassword(userDto.getPassword());
+        final OffsetDateTime currentTime = OffsetDateTime.now();
+        userCredentialsEntity.setCreatedAt(currentTime);
+        userCredentialsEntity.setUpdatedAt(currentTime);
+        return userCredentialsEntity;
     }
 
     private UserDto mapToUserDto(final UserEntity userEntity)
@@ -121,16 +133,12 @@ public class UserServiceImpl implements UserService
             .map(entity -> UserDto.newBuilder()
                 .id(userEntity.getId())
                 .userId(userEntity.getUserId())
-                .username(userEntity.getUsername())
                 .email(userEntity.getEmail())
-                .password(userEntity.getPassword())
                 .firstName(userEntity.getFirstName())
                 .lastName(userEntity.getLastName())
                 .age(userEntity.getAge())
                 .city(userEntity.getCity())
                 .isAdmin(userEntity.getIsAdmin())
-                .createdAt(userEntity.getCreatedAt())
-                .updatedAt(userEntity.getUpdatedAt())
                 .build())
             .orElse(null);
     }

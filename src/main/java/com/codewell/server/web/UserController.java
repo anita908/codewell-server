@@ -21,21 +21,12 @@ public class UserController
     }
 
     @GET
+    @JwtAuthenticationNeeded
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/userId/{userId}")
-    public UserDto getUserByUserId(@PathParam("userId") final String userId)
+    public UserDto getUserData(@HeaderParam("Source-User-Id") final String userId)
     {
         Assert.hasText(userId, "User id cannot be null");
         return userService.getUserById(userId);
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/username/{username}")
-    public UserDto getUserByUsername(@PathParam("username") final String username)
-    {
-        Assert.hasText(username, "Username cannot be null");
-        return userService.getUserByUsername(username);
     }
 
     @POST

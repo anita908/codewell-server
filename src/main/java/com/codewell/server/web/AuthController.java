@@ -38,8 +38,8 @@ public class AuthController
     @JwtAuthenticationNeeded
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/refresh/{userId}")
-    public AuthTokenDto refresh(@PathParam("userId") final String userId)
+    @Path("/refresh")
+    public AuthTokenDto refresh(@HeaderParam("Source-User-Id") final String userId)
     {
         Assert.hasText(userId, "No userId provided");
         return authService.refreshUser(userId);
