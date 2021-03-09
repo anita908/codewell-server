@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  ebs: circleci/aws-elastic-beanstalk@1.0.1
 jobs:
   Compile:
     docker:
@@ -41,9 +39,13 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - ebs/setup
       - attach_workspace:
           at: ./
+      - run:
+          name: Install pip and Elastic Beanstalk CLI
+          command: |
+            sudo pip install --upgrade pip setuptools wheel
+            sudo pip install awsebcli --upgrade
       - run:
           name: Deploy JAR
           command: eb deploy $EBS_ENV

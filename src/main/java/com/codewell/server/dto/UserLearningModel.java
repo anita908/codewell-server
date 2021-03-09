@@ -1,5 +1,6 @@
 package com.codewell.server.dto;
 
+import com.codewell.server.persistence.entity.ActivityEntity;
 import com.codewell.server.persistence.entity.GradeEntity;
 import com.codewell.server.persistence.entity.HomeworkEntity;
 
@@ -11,28 +12,41 @@ import java.util.Map;
 public class UserLearningModel
 {
     private UserDto userData;
-    private List<EnrollmentDto> enrolledSessions = new ArrayList<>();
+    private List<EnrolledSessionProgressModel> enrolledSessions = new ArrayList<>();
 
-    public void coalesceAssignmentsAndGrades(final EnrollmentDto enrollment, final List<HomeworkEntity> homeworkEntities, final List<GradeEntity> gradeEntities)
+    public void coalesceAssignmentsAndGrades(final EnrolledSessionProgressModel enrolledSession,
+                                             final List<ActivityEntity> activityEntities,
+                                             final List<HomeworkEntity> homeworkEntities,
+                                             final List<GradeEntity> gradeEntities)
     {
-        final Map<Integer, GradeDto> gradeMap = new HashMap<>();
-        final List<GradeDto> grades = new ArrayList<>();
-        homeworkEntities.forEach(homeworkEntity -> {
-            final GradeDto grade = new GradeDto();
-            grade.setHomeworkId(homeworkEntity.getId());
-            grade.setHomeworkName(homeworkEntity.getName());
-            grades.add(grade);
-            gradeMap.put(grade.getHomeworkId(), grade);
+        final Map<Integer, ChapterProgressModel> chapterNoToProgressMap = new HashMap<>();
+        final Map<Integer, ChapterProgressModel> homeworkIdToProgressMap = new HashMap<>();
+        enrolledSession.getSessionProgressModel().forEach(chapterProgressModel -> chapterNoToProgressMap.put(chapterProgressModel.getChapterNo(), chapterProgressModel));
+
+        activityEntities.forEach(activityEntity ->
+        {
+            final ChapterProgressModel progress = chapterNoToProgressMap.get(activityEntity.getChapterNo());
+            final ActivityDto activity = new ActivityDto();
+            activity.setId(activityEntity.getId());
+            activity.setCourseId(activityEntity.getCourseId());
+            activity.setChapterNo(activityEntity.getChapterNo());
+            activity.setName(activityEntity.getName());
+            activity.setLink(activityEntity.getLink());
+            progress.getActivities().add(activity);
         });
+
+        homeworkEntities.forEach(homeworkEntity -> {
+            final ChapterProgressModel progress = chapterNoToProgressMap.get(homeworkEntity.getChapterNo());
+            progress.setHomeworkId(homeworkEntity.getId());
+            progress.setHomeworkName(homeworkEntity.getName());
+            homeworkIdToProgressMap.put(homeworkEntity.getId(), progress);
+        });
+
         gradeEntities.forEach(gradeEntity ->
         {
-            final GradeDto grade = gradeMap.get(gradeEntity.getHomeworkId());
-            grade.setId(gradeEntity.getId());
-            grade.setScore(gradeEntity.getScore());
-            grade.setDueDate(gradeEntity.getDueAt());
-            grade.setSubmitted(gradeEntity.getSubmitted());
+            final ChapterProgressModel progress = homeworkIdToProgressMap.get(gradeEntity.getHomeworkId());
+            progress.setHomeworkScore(gradeEntity.getScore());
         });
-        enrollment.setGrades(grades);
     }
 
     public UserDto getUserData()
@@ -45,12 +59,12 @@ public class UserLearningModel
         this.userData = userData;
     }
 
-    public List<EnrollmentDto> getEnrolledSessions()
+    public List<EnrolledSessionProgressModel> getEnrolledSessions()
     {
         return enrolledSessions;
     }
 
-    public void setEnrolledSessions(List<EnrollmentDto> enrolledSessions)
+    public void setEnrolledSessions(List<EnrolledSessionProgressModel> enrolledSessions)
     {
         this.enrolledSessions = enrolledSessions;
     }
