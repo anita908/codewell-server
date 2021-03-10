@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "homework")
-public class HomeworkEntity
+@Table(name = "activities")
+public class ActivityEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,8 +21,8 @@ public class HomeworkEntity
     @Column(name = "name")
     private String name;
 
-    @Column(name = "storage_url")
-    private String storageUrl;
+    @Column(name = "link")
+    private String link;
 
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
@@ -70,14 +70,14 @@ public class HomeworkEntity
         this.name = name;
     }
 
-    public String getStorageUrl()
+    public String getLink()
     {
-        return storageUrl;
+        return link;
     }
 
-    public void setStorageUrl(String storageUrl)
+    public void setLink(String link)
     {
-        this.storageUrl = storageUrl;
+        this.link = link;
     }
 
     public OffsetDateTime getCreatedAt()

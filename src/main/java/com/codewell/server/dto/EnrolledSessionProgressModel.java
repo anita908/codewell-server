@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EnrollmentDto
+public class EnrolledSessionProgressModel
 {
-    private Integer id;
+    private Integer enrollmentId;
     private Integer sessionId;
     private Integer courseId;
     private String courseName;
@@ -18,16 +18,16 @@ public class EnrollmentDto
     private OffsetDateTime endDate;
     private String graduated;
     private Float overallGrade;
-    private List<GradeDto> grades = new ArrayList<>();
+    private List<ChapterProgressModel> sessionProgressModel = new ArrayList<>();
 
-    public Integer getId()
+    public Integer getEnrollmentId()
     {
-        return id;
+        return enrollmentId;
     }
 
-    public void setId(Integer id)
+    public void setEnrollmentId(Integer enrollmentId)
     {
-        this.id = id;
+        this.enrollmentId = enrollmentId;
     }
 
     public Integer getSessionId()
@@ -110,13 +110,13 @@ public class EnrollmentDto
         this.overallGrade = overallGrade;
     }
 
-    public List<GradeDto> getGrades()
+    public List<ChapterProgressModel> getSessionProgressModel()
     {
-        return grades;
+        return sessionProgressModel;
     }
 
-    public void setGrades(List<GradeDto> grades)
+    public void setSessionProgressModel(List<ChapterProgressModel> sessionProgressModel)
     {
-        this.grades = grades;
+        this.sessionProgressModel = sessionProgressModel;
     }
 }

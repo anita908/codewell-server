@@ -27,7 +27,7 @@ public class LearningController
     @JwtAuthenticationNeeded
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/progress")
-    public UserLearningModel getUserHomepageData(@HeaderParam("Source-User-Id") final String userId)
+    public UserLearningModel getUserHomepageData(@HeaderParam("Source-User-Id") final String userId) throws Exception
     {
         Assert.hasText(userId, "User id cannot be null");
         return userLearningService.getUserLearningModel(userId);
