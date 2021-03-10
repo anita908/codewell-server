@@ -1,5 +1,7 @@
 package com.codewell.server.dto;
 
+import org.springframework.security.core.parameters.P;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,7 @@ public class ChapterProgressModel
     private String chapterName;
     private Integer homeworkId;
     private String homeworkName;
+    private String homeworkLink;
     private Float homeworkScore;
     private List<ActivityDto> activities = new ArrayList<>();
 
@@ -25,6 +28,7 @@ public class ChapterProgressModel
         private String chapterName;
         private Integer homeworkId;
         private String homeworkName;
+        private String homeworkLink;
         private Float homeworkScore;
         private List<ActivityDto> activities = new ArrayList<>();
 
@@ -58,6 +62,12 @@ public class ChapterProgressModel
             return this;
         }
 
+        public Builder homeworkLink(String homeworkLink)
+        {
+            this.homeworkLink = homeworkLink;
+            return this;
+        }
+
         public Builder homeworkScore(Float homeworkScore)
         {
             this.homeworkScore = homeworkScore;
@@ -78,6 +88,7 @@ public class ChapterProgressModel
             model.setChapterName(this.chapterName);
             model.setHomeworkId(this.homeworkId);
             model.setHomeworkName(this.homeworkName);
+            model.setHomeworkLink(this.homeworkLink);
             model.setHomeworkScore(this.homeworkScore);
             model.setActivities(this.activities);
             return model;
@@ -132,6 +143,16 @@ public class ChapterProgressModel
     public void setHomeworkName(String homeworkName)
     {
         this.homeworkName = homeworkName;
+    }
+
+    public String getHomeworkLink()
+    {
+        return homeworkLink;
+    }
+
+    public void setHomeworkLink(String homeworkLink)
+    {
+        this.homeworkLink = homeworkLink;
     }
 
     public Float getHomeworkScore()

@@ -39,6 +39,7 @@ public class UserLearningModel
             final ChapterProgressModel progress = chapterNoToProgressMap.get(homeworkEntity.getChapterNo());
             progress.setHomeworkId(homeworkEntity.getId());
             progress.setHomeworkName(homeworkEntity.getName());
+            progress.setHomeworkLink(homeworkEntity.getLink());
             homeworkIdToProgressMap.put(homeworkEntity.getId(), progress);
         });
 
