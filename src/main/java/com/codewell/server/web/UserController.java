@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/v1/user")
 public class UserController
@@ -40,6 +41,7 @@ public class UserController
         Assert.hasText(userDto.getPassword(), "No password provided");
         Assert.hasText(userDto.getFirstName(), "No first name provided");
         Assert.hasText(userDto.getLastName(), "No last name provided");
+
         return userService.createUser(userDto);
     }
 
@@ -48,12 +50,29 @@ public class UserController
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/update")
-    public UserDto updateUser(final UserDto userDto)
+    public UserDto updateUser(@HeaderParam("Source-User-Id") final String userId, final UserDto userDto)
     {
         Assert.notNull(userDto, "User payload must not be null");
-        Assert.hasText(userDto.getUserId(), "No user id provided");
+        Assert.hasText(userId, "No user id provided");
         Assert.hasText(userDto.getFirstName(), "No first name provided");
         Assert.hasText(userDto.getLastName(), "No last name provided");
+
         return userService.updateUser(userDto);
+    }
+
+    @PUT
+    @JwtAuthenticationNeeded
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/updateCredentials")
+    public Response updatePassword(@HeaderParam("Source-User-Id") final String userId, final UserDto userDto)
+    {
+        Assert.notNull(userDto, "User payload must not be null");
+        Assert.hasText(userId, "No user id provided");
+        Assert.hasText(userDto.getUsername(), "No username provided");
+        Assert.hasText(userDto.getPassword(), "No password provided");
+
+        userService.updateUsernameAndPassword(userId, userDto);
+        return Response.status(Response.Status.OK).build();
     }
 }

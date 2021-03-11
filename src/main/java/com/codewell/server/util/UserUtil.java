@@ -20,4 +20,9 @@ public class UserUtil
     {
         return user.getCity() == null || StringUtils.isAlphaSpace(user.getCity());
     }
+
+    public static boolean hasValidUsername(final UserDto user)
+    {
+        return StringUtils.isNotEmpty(user.getUsername()) && StringUtils.isAlphanumeric(user.getUsername());
+    }
 }

@@ -21,6 +21,7 @@ public class AuthServiceImpl implements AuthService
     private final PasswordEncoder passwordEncoder;
 
     private static final String SUCCESS = "SUCCESS";
+    private static final String FAILURE = "FAILURE";
 
     @Inject
     public AuthServiceImpl(final JwtService jwtService,

@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService
         newUser.setUserId(userId);
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
+        Assert.isTrue(UserUtil.hasValidUsername(newUser), "Username is not valid");
         Assert.isTrue(UserUtil.hasValidEmail(newUser), "Email is not valid");
         Assert.isTrue(UserUtil.hasValidAge(newUser), "Age must be greater than 0");
         Assert.isTrue(UserUtil.hasValidAddress(newUser), "Address must only contain letters");
@@ -88,14 +89,34 @@ public class UserServiceImpl implements UserService
         {
             throw new IllegalArgumentException(String.format("No record found for user id: %s", userDto.getUserId()));
         }
+
         original.setEmail(userDto.getEmail());
         original.setFirstName(userDto.getFirstName());
         original.setLastName(userDto.getLastName());
         original.setAge(userDto.getAge());
         original.setCity(userDto.getCity());
         original.setUpdatedAt(OffsetDateTime.now());
+
         userRepository.update(original);
         return this.mapToUserDto(original);
+    }
+
+    @Override
+    public void updateUsernameAndPassword(final String userId, final UserDto userDto)
+    {
+        Assert.isTrue(UserUtil.hasValidUsername(userDto), "Username is not valid");
+
+        final UserCredentialsEntity originalCredentials = userCredentialsRepository.select(userId);
+        if (originalCredentials == null)
+        {
+            throw new IllegalArgumentException(String.format("No login credentials found for user id: %s", userId));
+        }
+
+        originalCredentials.setUsername(userDto.getUsername());
+        originalCredentials.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        originalCredentials.setUpdatedAt(OffsetDateTime.now());
+
+        userCredentialsRepository.update(originalCredentials);
     }
 
     private UserEntity mapToUserEntity(final UserDto userDto)

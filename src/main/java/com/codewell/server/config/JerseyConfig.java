@@ -2,10 +2,7 @@ package com.codewell.server.config;
 
 import com.codewell.server.exception.GeneralExceptionMapper;
 import com.codewell.server.exception.IllegalArgumentExceptionMapper;
-import com.codewell.server.web.AuthController;
-import com.codewell.server.web.DefaultController;
-import com.codewell.server.web.LearningController;
-import com.codewell.server.web.UserController;
+import com.codewell.server.web.*;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +20,7 @@ public class JerseyConfig extends ResourceConfig
         register(DefaultController.class);
         register(UserController.class);
         register(AuthController.class);
+        register(HomeworkController.class);
         register(LearningController.class);
     }
 }
