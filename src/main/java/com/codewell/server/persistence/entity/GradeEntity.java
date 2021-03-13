@@ -22,7 +22,7 @@ public class GradeEntity
     private String userId;
 
     @Column(name = "score")
-    private Float score;
+    private Double score;
 
     @Column(name = "due_at")
     private OffsetDateTime dueAt;
@@ -76,12 +76,12 @@ public class GradeEntity
         this.userId = userId;
     }
 
-    public Float getScore()
+    public Double getScore()
     {
         return score;
     }
 
-    public void setScore(Float score)
+    public void setScore(Double score)
     {
         this.score = score;
     }

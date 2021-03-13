@@ -17,10 +17,13 @@ public class JerseyConfig extends ResourceConfig
         register(GeneralExceptionMapper.class);
         register(IllegalArgumentExceptionMapper.class);
         register(HttpAuthenticationConfig.class);
+        register(HttpAdminAuthenticationConfig.class);
         register(DefaultController.class);
         register(UserController.class);
         register(AuthController.class);
         register(HomeworkController.class);
+        register(EnrollmentController.class);
         register(LearningController.class);
+        register(AdminController.class);
     }
 }

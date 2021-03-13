@@ -9,4 +9,5 @@ import java.util.List;
 public interface EnrollmentRepository extends BaseJpaRepository<EnrollmentEntity, Integer>
 {
     List<EnrollmentEntity> selectByUserId(final String userId);
+    EnrollmentEntity selectBySessionAndUser(final int sessionId, final String userId);
 }

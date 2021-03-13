@@ -17,8 +17,10 @@ import org.springframework.util.Assert;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @Singleton
@@ -39,6 +41,16 @@ public class UserServiceImpl implements UserService
         this.userRepository = userRepository;
         this.userCredentialsRepository = userCredentialsRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public List<UserDto> getAllUsers()
+    {
+        LOGGER.info("Getting data for all users");
+        return userRepository.selectAll()
+            .stream()
+            .map(this::mapToUserDto)
+            .collect(Collectors.toList());
     }
 
     @Override

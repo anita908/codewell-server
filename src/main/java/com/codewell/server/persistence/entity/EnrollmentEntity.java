@@ -29,7 +29,7 @@ public class EnrollmentEntity
     private String graduated;
 
     @Column(name = "overall_grade")
-    private Float overallGrade;
+    private Double overallGrade;
 
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
@@ -97,12 +97,12 @@ public class EnrollmentEntity
         this.graduated = graduated;
     }
 
-    public Float getOverallGrade()
+    public Double getOverallGrade()
     {
         return overallGrade;
     }
 
-    public void setOverallGrade(Float overallGrade)
+    public void setOverallGrade(Double overallGrade)
     {
         this.overallGrade = overallGrade;
     }

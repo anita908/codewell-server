@@ -18,7 +18,7 @@ public class EnrolledSessionProgressModel
     private OffsetDateTime endDate;
     private Integer currentChapter;
     private String graduated;
-    private Float overallGrade;
+    private Double overallGrade;
     private List<ChapterProgressModel> sessionProgressModel = new ArrayList<>();
 
     public Integer getEnrollmentId()
@@ -111,12 +111,12 @@ public class EnrolledSessionProgressModel
         this.graduated = graduated;
     }
 
-    public Float getOverallGrade()
+    public Double getOverallGrade()
     {
         return overallGrade;
     }
 
-    public void setOverallGrade(Float overallGrade)
+    public void setOverallGrade(Double overallGrade)
     {
         this.overallGrade = overallGrade;
     }
