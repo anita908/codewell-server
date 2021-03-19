@@ -9,4 +9,5 @@ import java.util.List;
 public interface HomeworkVideoRepository extends BaseJpaRepository<HomeworkVideoEntity, Integer>
 {
     List<HomeworkVideoEntity> selectByHomeworkId(final int homeworkId);
+    List<HomeworkVideoEntity> selectByHomeworkIds(final List<Integer> homeworkIds);
 }

@@ -9,4 +9,5 @@ import java.util.List;
 public interface HomeworkRepository extends BaseJpaRepository<HomeworkEntity, Integer>
 {
     List<HomeworkEntity> selectByCourseId(final int courseId);
+    List<HomeworkEntity> selectByCourseIdAndChapterNo(final int courseId, final int chapterNo);
 }
