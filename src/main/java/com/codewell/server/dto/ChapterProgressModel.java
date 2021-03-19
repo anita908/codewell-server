@@ -1,7 +1,5 @@
 package com.codewell.server.dto;
 
-import org.springframework.security.core.parameters.P;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +8,8 @@ public class ChapterProgressModel
     private Integer chapterId;
     private Integer chapterNo;
     private String chapterName;
-    private Integer homeworkId;
-    private String homeworkName;
-    private String homeworkLink;
-    private Float homeworkScore;
+    private String slidesLink;
+    private List<HomeworkProgressModel> homeworkProgress = new ArrayList<>();
     private List<ActivityDto> activities = new ArrayList<>();
 
     public static Builder newBuilder()
@@ -26,10 +22,8 @@ public class ChapterProgressModel
         private Integer chapterId;
         private Integer chapterNo;
         private String chapterName;
-        private Integer homeworkId;
-        private String homeworkName;
-        private String homeworkLink;
-        private Float homeworkScore;
+        private String slidesLink;
+        private List<HomeworkProgressModel> homeworkProgress = new ArrayList<>();
         private List<ActivityDto> activities = new ArrayList<>();
 
         public Builder chapterId(Integer chapterId)
@@ -50,27 +44,15 @@ public class ChapterProgressModel
             return this;
         }
 
-        public Builder homeworkId(Integer homeworkId)
+        public Builder slidesLink(String slidesLink)
         {
-            this.homeworkId = homeworkId;
+            this.slidesLink = slidesLink;
             return this;
         }
 
-        public Builder homeworkName(String homeworkName)
+        public Builder homeworkProgress(List<HomeworkProgressModel> homeworkProgress)
         {
-            this.homeworkName = homeworkName;
-            return this;
-        }
-
-        public Builder homeworkLink(String homeworkLink)
-        {
-            this.homeworkLink = homeworkLink;
-            return this;
-        }
-
-        public Builder homeworkScore(Float homeworkScore)
-        {
-            this.homeworkScore = homeworkScore;
+            this.homeworkProgress = homeworkProgress;
             return this;
         }
 
@@ -86,10 +68,8 @@ public class ChapterProgressModel
             model.setChapterId(this.chapterId);
             model.setChapterNo(this.chapterNo);
             model.setChapterName(this.chapterName);
-            model.setHomeworkId(this.homeworkId);
-            model.setHomeworkName(this.homeworkName);
-            model.setHomeworkLink(this.homeworkLink);
-            model.setHomeworkScore(this.homeworkScore);
+            model.setSlidesLink(this.slidesLink);
+            model.setHomeworkProgress(this.homeworkProgress);
             model.setActivities(this.activities);
             return model;
         }
@@ -125,44 +105,24 @@ public class ChapterProgressModel
         this.chapterName = chapterName;
     }
 
-    public Integer getHomeworkId()
+    public String getSlidesLink()
     {
-        return homeworkId;
+        return slidesLink;
     }
 
-    public void setHomeworkId(Integer homeworkId)
+    public void setSlidesLink(String slidesLink)
     {
-        this.homeworkId = homeworkId;
+        this.slidesLink = slidesLink;
     }
 
-    public String getHomeworkName()
+    public List<HomeworkProgressModel> getHomeworkProgress()
     {
-        return homeworkName;
+        return homeworkProgress;
     }
 
-    public void setHomeworkName(String homeworkName)
+    public void setHomeworkProgress(List<HomeworkProgressModel> homeworkProgress)
     {
-        this.homeworkName = homeworkName;
-    }
-
-    public String getHomeworkLink()
-    {
-        return homeworkLink;
-    }
-
-    public void setHomeworkLink(String homeworkLink)
-    {
-        this.homeworkLink = homeworkLink;
-    }
-
-    public Float getHomeworkScore()
-    {
-        return homeworkScore;
-    }
-
-    public void setHomeworkScore(Float homeworkScore)
-    {
-        this.homeworkScore = homeworkScore;
+        this.homeworkProgress = homeworkProgress;
     }
 
     public List<ActivityDto> getActivities()

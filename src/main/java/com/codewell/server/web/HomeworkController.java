@@ -25,7 +25,7 @@ public class HomeworkController
     @GET
     @JwtAuthenticationNeeded
     @Produces(MediaType.APPLICATION_JSON)
-    public List<HomeworkDto> getHomeworks(@QueryParam("homeworkId") final int courseId)
+    public List<HomeworkDto> getHomeworks(@QueryParam("courseId") final int courseId)
     {
         Assert.isTrue(courseId > 0, "Course id must be provided");
         return homeworkService.getHomeworksForCourse(courseId);

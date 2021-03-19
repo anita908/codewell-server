@@ -4,14 +4,8 @@ import com.codewell.server.dto.ChapterProgressModel;
 import com.codewell.server.dto.EnrolledSessionProgressModel;
 import com.codewell.server.dto.UserDto;
 import com.codewell.server.dto.UserLearningModel;
-import com.codewell.server.persistence.entity.ActivityEntity;
-import com.codewell.server.persistence.entity.EnrollmentEntity;
-import com.codewell.server.persistence.entity.GradeEntity;
-import com.codewell.server.persistence.entity.HomeworkEntity;
-import com.codewell.server.persistence.repository.ActivityRepository;
-import com.codewell.server.persistence.repository.EnrollmentRepository;
-import com.codewell.server.persistence.repository.GradeRepository;
-import com.codewell.server.persistence.repository.HomeworkRepository;
+import com.codewell.server.persistence.entity.*;
+import com.codewell.server.persistence.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -105,6 +99,7 @@ public class UserLearningServiceImpl implements UserLearningService
                     .chapterId(chapter.getId())
                     .chapterNo(chapter.getChapterNo())
                     .chapterName(chapter.getName())
+                    .slidesLink(chapter.getSlidesLink())
                     .build()
             ).collect(Collectors.toList()));
         return enrolledSessionProgressModel;
