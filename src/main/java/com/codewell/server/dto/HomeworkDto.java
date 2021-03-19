@@ -9,7 +9,7 @@ public class HomeworkDto
     private Integer courseId;
     private Integer chapterNo;
     private String homeworkName;
-    private String storageUrl;
+    private String link;
 
     public Integer getId()
     {
@@ -51,13 +51,13 @@ public class HomeworkDto
         this.homeworkName = homeworkName;
     }
 
-    public String getStorageUrl()
+    public String getLink()
     {
-        return storageUrl;
+        return link;
     }
 
-    public void setStorageUrl(String storageUrl)
+    public void setLink(String link)
     {
-        this.storageUrl = storageUrl;
+        this.link = link;
     }
 }
