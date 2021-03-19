@@ -20,7 +20,7 @@ public class UserLearningModel
                                              final List<GradeEntity> gradeEntities)
     {
         final Map<Integer, ChapterProgressModel> chapterNoToProgressMap = new HashMap<>();
-        final Map<Integer, ChapterProgressModel> homeworkIdToProgressMap = new HashMap<>();
+        final Map<Integer, HomeworkProgressModel> homeworkIdToProgressMap = new HashMap<>();
         enrolledSession.getSessionProgressModel().forEach(chapterProgressModel -> chapterNoToProgressMap.put(chapterProgressModel.getChapterNo(), chapterProgressModel));
 
         activityEntities.forEach(activityEntity ->
@@ -36,17 +36,21 @@ public class UserLearningModel
         });
 
         homeworkEntities.forEach(homeworkEntity -> {
-            final ChapterProgressModel progress = chapterNoToProgressMap.get(homeworkEntity.getChapterNo());
-            progress.setHomeworkId(homeworkEntity.getId());
-            progress.setHomeworkName(homeworkEntity.getName());
-            progress.setHomeworkLink(homeworkEntity.getLink());
-            homeworkIdToProgressMap.put(homeworkEntity.getId(), progress);
+            final ChapterProgressModel chapterProgress = chapterNoToProgressMap.get(homeworkEntity.getChapterNo());
+            final HomeworkProgressModel homeworkProgress = new HomeworkProgressModel();
+
+            homeworkProgress.setHomeworkId(homeworkEntity.getId());
+            homeworkProgress.setHomeworkName(homeworkEntity.getName());
+            homeworkProgress.setHomeworkLink(homeworkEntity.getLink());
+
+            chapterProgress.getHomeworkProgress().add(homeworkProgress);
+            homeworkIdToProgressMap.put(homeworkEntity.getId(), homeworkProgress);
         });
 
         gradeEntities.forEach(gradeEntity ->
         {
-            final ChapterProgressModel progress = homeworkIdToProgressMap.get(gradeEntity.getHomeworkId());
-            progress.setHomeworkScore(gradeEntity.getScore());
+            final HomeworkProgressModel homeworkProgress = homeworkIdToProgressMap.get(gradeEntity.getHomeworkId());
+            homeworkProgress.setHomeworkScore(gradeEntity.getScore());
         });
     }
 

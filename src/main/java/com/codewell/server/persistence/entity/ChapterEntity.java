@@ -21,6 +21,9 @@ public class ChapterEntity
     @Column(name = "name")
     private String name;
 
+    @Column(name = "slides_link")
+    private String slidesLink;
+
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
@@ -65,6 +68,16 @@ public class ChapterEntity
     public void setName(String name)
     {
         this.name = name;
+    }
+
+    public String getSlidesLink()
+    {
+        return slidesLink;
+    }
+
+    public void setSlidesLink(String slidesLink)
+    {
+        this.slidesLink = slidesLink;
     }
 
     public OffsetDateTime getCreatedAt()
