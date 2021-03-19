@@ -57,7 +57,7 @@ public class UserController
         Assert.hasText(userDto.getFirstName(), "No first name provided");
         Assert.hasText(userDto.getLastName(), "No last name provided");
 
-        return userService.updateUser(userDto);
+        return userService.updateUser(userId, userDto);
     }
 
     @PUT

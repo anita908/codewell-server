@@ -5,7 +5,7 @@ public class HomeworkProgressModel
     private Integer homeworkId;
     private String homeworkName;
     private String homeworkLink;
-    private Float homeworkScore;
+    private Double homeworkScore;
 
     public Integer getHomeworkId()
     {
@@ -37,12 +37,12 @@ public class HomeworkProgressModel
         this.homeworkLink = homeworkLink;
     }
 
-    public Float getHomeworkScore()
+    public Double getHomeworkScore()
     {
         return homeworkScore;
     }
 
-    public void setHomeworkScore(Float homeworkScore)
+    public void setHomeworkScore(Double homeworkScore)
     {
         this.homeworkScore = homeworkScore;
     }

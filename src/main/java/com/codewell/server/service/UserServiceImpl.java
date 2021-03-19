@@ -90,16 +90,16 @@ public class UserServiceImpl implements UserService
     }
 
     @Override
-    public UserDto updateUser(final UserDto userDto)
+    public UserDto updateUser(final String userId, final UserDto userDto)
     {
         Assert.isTrue(UserUtil.hasValidEmail(userDto), "Email is not valid");
         Assert.isTrue(UserUtil.hasValidAge(userDto), "Age must be greater than 0");
         Assert.isTrue(UserUtil.hasValidAddress(userDto), "Address must only contain letters");
 
-        final UserEntity original = userRepository.selectByUserId(userDto.getUserId());
+        final UserEntity original = userRepository.selectByUserId(userId);
         if (original == null)
         {
-            throw new IllegalArgumentException(String.format("No record found for user id: %s", userDto.getUserId()));
+            throw new IllegalArgumentException(String.format("No record found for user id: %s", userId));
         }
 
         original.setEmail(userDto.getEmail());
@@ -109,8 +109,8 @@ public class UserServiceImpl implements UserService
         original.setCity(userDto.getCity());
         original.setUpdatedAt(OffsetDateTime.now());
 
-        userRepository.update(original);
-        return this.mapToUserDto(original);
+//        userRepository.update(original);
+        return this.mapToUserDto(userRepository.update(original));
     }
 
     @Override
