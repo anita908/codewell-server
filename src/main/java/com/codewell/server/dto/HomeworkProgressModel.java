@@ -6,6 +6,7 @@ public class HomeworkProgressModel
     private String homeworkName;
     private String homeworkLink;
     private Double homeworkScore;
+    private String submitted = "false";
 
     public Integer getHomeworkId()
     {
@@ -45,5 +46,15 @@ public class HomeworkProgressModel
     public void setHomeworkScore(Double homeworkScore)
     {
         this.homeworkScore = homeworkScore;
+    }
+
+    public String getSubmitted()
+    {
+        return submitted;
+    }
+
+    public void setSubmitted(String submitted)
+    {
+        this.submitted = submitted;
     }
 }
