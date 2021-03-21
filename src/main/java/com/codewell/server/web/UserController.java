@@ -65,7 +65,7 @@ public class UserController
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/updateCredentials")
-    public Response updatePassword(@HeaderParam("Source-User-Id") final String userId, final UserDto userDto)
+    public Response updateLoginCredentials(@HeaderParam("Source-User-Id") final String userId, final UserDto userDto)
     {
         Assert.notNull(userDto, "User payload must not be null");
         Assert.hasText(userId, "No user id provided");
