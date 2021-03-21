@@ -16,6 +16,7 @@ public class EnrolledSessionProgressModel
     private OffsetDateTime enrollDate;
     private OffsetDateTime beginDate;
     private OffsetDateTime endDate;
+    private Integer currentChapter;
     private String graduated;
     private Float overallGrade;
     private List<ChapterProgressModel> sessionProgressModel = new ArrayList<>();
@@ -88,6 +89,16 @@ public class EnrolledSessionProgressModel
     public void setEndDate(OffsetDateTime endDate)
     {
         this.endDate = endDate;
+    }
+
+    public Integer getCurrentChapter()
+    {
+        return currentChapter;
+    }
+
+    public void setCurrentChapter(Integer currentChapter)
+    {
+        this.currentChapter = currentChapter;
     }
 
     public String getGraduated()

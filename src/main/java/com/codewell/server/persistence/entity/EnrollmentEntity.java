@@ -22,6 +22,9 @@ public class EnrollmentEntity
     @Column(name = "enroll_date")
     private OffsetDateTime enrollDate;
 
+    @Column(name = "current_chapter")
+    private Integer currentChapter;
+
     @Column(name = "graduated")
     private String graduated;
 
@@ -72,6 +75,16 @@ public class EnrollmentEntity
     public void setEnrollDate(OffsetDateTime enrollDate)
     {
         this.enrollDate = enrollDate;
+    }
+
+    public Integer getCurrentChapter()
+    {
+        return currentChapter;
+    }
+
+    public void setCurrentChapter(Integer currentChapter)
+    {
+        this.currentChapter = currentChapter;
     }
 
     public String getGraduated()

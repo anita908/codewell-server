@@ -89,6 +89,7 @@ public class UserLearningServiceImpl implements UserLearningService
         enrolledSessionProgressModel.setEnrollDate(enrollmentEntity.getEnrollDate());
         enrolledSessionProgressModel.setBeginDate(enrollmentEntity.getSession().getBeginDate());
         enrolledSessionProgressModel.setEndDate(enrollmentEntity.getSession().getEndDate());
+        enrolledSessionProgressModel.setCurrentChapter(enrollmentEntity.getCurrentChapter());
         enrolledSessionProgressModel.setGraduated(enrollmentEntity.getGraduated());
         enrolledSessionProgressModel.setOverallGrade(enrollmentEntity.getOverallGrade());
         enrolledSessionProgressModel.setSessionProgressModel(enrollmentEntity.getSession()
