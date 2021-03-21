@@ -23,7 +23,7 @@ public class CourseEntity
     private Integer ageUpper;
 
     @Column(name = "price")
-    private Float price;
+    private Double price;
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id")
@@ -75,12 +75,12 @@ public class CourseEntity
         this.ageUpper = ageUpper;
     }
 
-    public Float getPrice()
+    public Double getPrice()
     {
         return price;
     }
 
-    public void setPrice(Float price)
+    public void setPrice(Double price)
     {
         this.price = price;
     }

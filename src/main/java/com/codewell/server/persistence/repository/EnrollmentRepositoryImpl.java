@@ -9,6 +9,8 @@ import java.util.List;
 public class EnrollmentRepositoryImpl extends BaseJpaRepositoryImpl<EnrollmentEntity, Integer> implements EnrollmentRepository
 {
     private static final String SELECT_BY_USER_ID = "SELECT e FROM EnrollmentEntity e WHERE e.userId = :userId";
+    private static final String SELECT_BY_SESSION_AND_USER = "SELECT e FROM EnrollmentEntity e " +
+        "WHERE e.session.id = :sessionId AND e.userId = :userId";
 
     @Override
     public List<EnrollmentEntity> selectByUserId(final String userId)
@@ -16,5 +18,16 @@ public class EnrollmentRepositoryImpl extends BaseJpaRepositoryImpl<EnrollmentEn
         return this.getEntityManager().createQuery(SELECT_BY_USER_ID, EnrollmentEntity.class)
             .setParameter("userId", userId)
             .getResultList();
+    }
+
+    @Override
+    public EnrollmentEntity selectBySessionAndUser(final int sessionId, final String userId)
+    {
+        return this.getEntityManager().createQuery(SELECT_BY_SESSION_AND_USER, EnrollmentEntity.class)
+            .setParameter("sessionId", sessionId)
+            .setParameter("userId", userId)
+            .getResultStream()
+            .findFirst()
+            .orElse(null);
     }
 }

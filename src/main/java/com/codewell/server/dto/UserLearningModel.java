@@ -23,16 +23,19 @@ public class UserLearningModel
         final Map<Integer, HomeworkProgressModel> homeworkIdToProgressMap = new HashMap<>();
         enrolledSession.getSessionProgressModel().forEach(chapterProgressModel -> chapterNoToProgressMap.put(chapterProgressModel.getChapterNo(), chapterProgressModel));
 
+
         activityEntities.forEach(activityEntity ->
         {
-            final ChapterProgressModel progress = chapterNoToProgressMap.get(activityEntity.getChapterNo());
+            final ChapterProgressModel chapterProgress = chapterNoToProgressMap.get(activityEntity.getChapterNo());
             final ActivityDto activity = new ActivityDto();
+
             activity.setId(activityEntity.getId());
             activity.setCourseId(activityEntity.getCourseId());
             activity.setChapterNo(activityEntity.getChapterNo());
             activity.setName(activityEntity.getName());
             activity.setLink(activityEntity.getLink());
-            progress.getActivities().add(activity);
+
+            chapterProgress.getActivities().add(activity);
         });
 
         homeworkEntities.forEach(homeworkEntity -> {
@@ -51,6 +54,7 @@ public class UserLearningModel
         {
             final HomeworkProgressModel homeworkProgress = homeworkIdToProgressMap.get(gradeEntity.getHomeworkId());
             homeworkProgress.setHomeworkScore(gradeEntity.getScore());
+            homeworkProgress.setSubmitted(gradeEntity.getSubmitted());
         });
     }
 

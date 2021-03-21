@@ -8,7 +8,7 @@ public class UserUtil
 {
     public static boolean hasValidEmail(final UserDto user)
     {
-        return StringUtils.isEmpty(user.getEmail()) || EmailValidator.getInstance().isValid(user.getEmail());
+        return user.getEmail() == null || EmailValidator.getInstance().isValid(user.getEmail());
     }
 
     public static boolean hasValidAge(final UserDto user)

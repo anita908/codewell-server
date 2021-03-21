@@ -2,19 +2,21 @@ package com.codewell.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto
 {
     private Integer id;
     private String userId;
-    private String username;
     private String email;
-    private String password;
     private String firstName;
     private String lastName;
     private Integer age;
     private String city;
     private String isAdmin;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String username;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String password;
 
     public static Builder newBuilder()
     {

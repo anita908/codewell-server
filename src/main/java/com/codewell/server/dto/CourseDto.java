@@ -12,7 +12,6 @@ public class CourseDto
     private Integer ageLower;
     private Integer ageUpper;
     private Float price;
-    private List<ChapterDto> chapters;
 
     public Integer getId()
     {
@@ -62,15 +61,5 @@ public class CourseDto
     public void setPrice(Float price)
     {
         this.price = price;
-    }
-
-    public List<ChapterDto> getChapters()
-    {
-        return chapters;
-    }
-
-    public void setChapters(List<ChapterDto> chapters)
-    {
-        this.chapters = chapters;
     }
 }
