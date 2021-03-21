@@ -24,6 +24,7 @@ public class JerseyConfig extends ResourceConfig
         register(HomeworkController.class);
         register(EnrollmentController.class);
         register(LearningController.class);
+        register(ChapterController.class);
         register(AdminController.class);
     }
 }
