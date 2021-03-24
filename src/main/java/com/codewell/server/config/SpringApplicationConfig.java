@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Singleton;
 
 @Configuration
-@Import({DatabaseConnectionConfig.class, HttpCorsConfig.class})
+@Import({DatabaseConnectionConfig.class})
 @Component
 @Singleton
 public class SpringApplicationConfig
