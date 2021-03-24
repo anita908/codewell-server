@@ -3,6 +3,7 @@ package com.codewell.server.web;
 import com.codewell.server.annotation.JwtAuthenticationNeeded;
 import com.codewell.server.dto.UserDto;
 import com.codewell.server.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/v1/user")
+@Tag(name = "Preferences Controller", description = "Manage preference resources")
 public class UserController
 {
     private final UserService userService;
