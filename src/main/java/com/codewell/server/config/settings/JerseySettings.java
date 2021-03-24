@@ -1,5 +1,11 @@
 package com.codewell.server.config.settings;
 
+import com.codewell.server.config.filter.HttpAdminAuthenticationFilter;
+import com.codewell.server.config.filter.HttpAuthenticationFilter;
+import com.codewell.server.exception.ExceptionResponse;
+import com.codewell.server.exception.GeneralExceptionMapper;
+import com.codewell.server.exception.IllegalArgumentExceptionMapper;
+import com.codewell.server.web.*;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -62,16 +68,25 @@ public class JerseySettings extends ResourceConfig
 
     private void registerControllers()
     {
-        this.packages(WEB_PACKAGE_PATH);
+        this.register(AdminController.class);
+        this.register(AuthController.class);
+        this.register(ChapterController.class);
+        this.register(EnrollmentController.class);
+        this.register(HomeworkController.class);
+        this.register(LearningController.class);
+        this.register(UserController.class);
     }
 
     private void registerFilters()
     {
-        this.packages(FILTERS_PACKAGE_PATH);
+        this.register(HttpAuthenticationFilter.class);
+        this.register(HttpAdminAuthenticationFilter.class);
     }
 
     private void registerMappers()
     {
-        this.packages(MAPPERS_PACKAGE_PATH);
+        this.register(ExceptionResponse.class);
+        this.register(GeneralExceptionMapper.class);
+        this.register(IllegalArgumentExceptionMapper.class);
     }
 }
