@@ -8,9 +8,9 @@ import com.codewell.server.persistence.entity.*;
 import com.codewell.server.persistence.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-@Component
+@Named
 @Singleton
 public class UserLearningServiceImpl implements UserLearningService
 {

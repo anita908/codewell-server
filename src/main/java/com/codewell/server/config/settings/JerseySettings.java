@@ -3,7 +3,6 @@ package com.codewell.server.config.settings;
 import com.codewell.server.config.filter.CorsFilter;
 import com.codewell.server.config.filter.HttpAdminAuthenticationFilter;
 import com.codewell.server.config.filter.HttpAuthenticationFilter;
-import com.codewell.server.exception.ExceptionResponse;
 import com.codewell.server.exception.GeneralExceptionMapper;
 import com.codewell.server.exception.IllegalArgumentExceptionMapper;
 import com.codewell.server.web.*;
@@ -13,14 +12,13 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.servlet.ServletProperties;
-import org.springframework.stereotype.Component;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.ws.rs.ApplicationPath;
 import java.util.List;
 
-@Component
+@Named
 @Singleton
 @ApplicationPath(JerseySettings.CONTEXT_PATH)
 public class JerseySettings extends ResourceConfig
@@ -40,9 +38,8 @@ public class JerseySettings extends ResourceConfig
         this.registerControllers();
         this.registerFilters();
         this.registerMappers();
-        this.initializeSwagger();
         this.setApplicationName(APP_NAME);
-        this.property(ServletProperties.FILTER_FORWARD_ON_404, true);
+        this.initializeSwagger();
     }
 
     private void registerControllers()
@@ -65,7 +62,6 @@ public class JerseySettings extends ResourceConfig
 
     private void registerMappers()
     {
-        this.register(ExceptionResponse.class);
         this.register(GeneralExceptionMapper.class);
         this.register(IllegalArgumentExceptionMapper.class);
     }
@@ -88,6 +84,7 @@ public class JerseySettings extends ResourceConfig
         openApiConfiguration.setOpenAPI(openApi);
         OpenApiResource resource = new OpenApiResource();
         resource.setOpenApiConfiguration(openApiConfiguration);
+
         this.register(resource);
     }
 }

@@ -3,14 +3,14 @@ package com.codewell.server.service;
 import com.codewell.server.dto.ChapterDto;
 import com.codewell.server.persistence.entity.ChapterEntity;
 import com.codewell.server.persistence.repository.ChapterRepository;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Named
 @Singleton
 public class CourseChapterServiceImpl implements CourseChapterService
 {

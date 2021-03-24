@@ -6,14 +6,14 @@ import com.codewell.server.persistence.entity.HomeworkEntity;
 import com.codewell.server.persistence.entity.HomeworkVideoEntity;
 import com.codewell.server.persistence.repository.HomeworkRepository;
 import com.codewell.server.persistence.repository.HomeworkVideoRepository;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Named
 @Singleton
 public class HomeworkServiceImpl implements HomeworkService
 {
