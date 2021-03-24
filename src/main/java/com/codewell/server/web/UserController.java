@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/v1/user")
-@Tag(name = "Preferences Controller", description = "Manage preference resources")
+@Tag(name = "User Controller", description = "Manage user resources")
 public class UserController
 {
     private final UserService userService;

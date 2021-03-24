@@ -8,14 +8,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-
-import javax.inject.Singleton;
 
 @Configuration
 @Import({DatabaseConnectionConfig.class})
-@Component
-@Singleton
 public class SpringApplicationConfig
 {
     @Autowired

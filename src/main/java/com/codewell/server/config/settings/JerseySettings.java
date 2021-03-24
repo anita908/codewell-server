@@ -27,7 +27,6 @@ public class JerseySettings extends ResourceConfig
     public static final String APP_NAME = "Codewell Backend";
     public static final String CONTEXT_PATH = "/api";
 
-    public static final String SWAGGER_PACKAGE_PATH = "io.swagger.v3.jaxrs2.integration.resources";
     public static final String WEB_PACKAGE_PATH = "com.codewell.server.web";
     public static final String FILTERS_PACKAGE_PATH = "com.codewell.server.config.filter";
     public static final String MAPPERS_PACKAGE_PATH = "com.codewell.server.exception";
@@ -37,33 +36,12 @@ public class JerseySettings extends ResourceConfig
 
     public JerseySettings()
     {
-        this.initializeSwagger();
         this.registerControllers();
         this.registerFilters();
         this.registerMappers();
+        this.initializeSwagger();
         this.setApplicationName(APP_NAME);
         this.property(ServletProperties.FILTER_FORWARD_ON_404, true);
-    }
-
-    private void initializeSwagger()
-    {
-        OpenAPI openApi = new OpenAPI();
-
-        final Info info = new Info();
-        info.setTitle(SWAGGER_TITLE);
-        info.setDescription(SWAGGER_DESCRIPTION);
-
-        final Server server = new Server();
-        server.setUrl(CONTEXT_PATH);
-
-        openApi.setInfo(info);
-        openApi.setServers(List.of(server));
-
-        SwaggerConfiguration openApiConfiguration = new SwaggerConfiguration();
-        openApiConfiguration.setOpenAPI(openApi);
-        OpenApiResource resource = new OpenApiResource();
-        resource.setOpenApiConfiguration(openApiConfiguration);
-        this.register(resource);
     }
 
     private void registerControllers()
@@ -88,5 +66,26 @@ public class JerseySettings extends ResourceConfig
         this.register(ExceptionResponse.class);
         this.register(GeneralExceptionMapper.class);
         this.register(IllegalArgumentExceptionMapper.class);
+    }
+
+    private void initializeSwagger()
+    {
+        final OpenAPI openApi = new OpenAPI();
+
+        final Info info = new Info();
+        info.setTitle(SWAGGER_TITLE);
+        info.setDescription(SWAGGER_DESCRIPTION);
+
+        final Server server = new Server();
+        server.setUrl("/");
+
+        openApi.setInfo(info);
+        openApi.setServers(List.of(server));
+
+        SwaggerConfiguration openApiConfiguration = new SwaggerConfiguration();
+        openApiConfiguration.setOpenAPI(openApi);
+        OpenApiResource resource = new OpenApiResource();
+        resource.setOpenApiConfiguration(openApiConfiguration);
+        this.register(resource);
     }
 }

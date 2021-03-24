@@ -1,22 +1,20 @@
 package com.codewell.server;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-import java.util.Map;
+import java.util.Collections;
 
 @SpringBootApplication
-@EnableAutoConfiguration
-public class ServiceRunner extends SpringBootServletInitializer
+public class ServiceRunner
 {
 	private static final String SERVER_PORT = "server.port";
 	private static final String PORT = "5000";
 
 	public static void main(String[] args)
 	{
-		Map<String, Object> props = Map.of(SERVER_PORT, PORT);
-		new ServiceRunner().configure(new SpringApplicationBuilder(ServiceRunner.class).properties(props)).run(args);
+		final SpringApplication app = new SpringApplication(ServiceRunner.class);
+		app.setDefaultProperties(Collections.singletonMap(SERVER_PORT, PORT));
+		app.run(args);
 	}
 }
