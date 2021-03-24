@@ -5,13 +5,13 @@ import com.codewell.server.persistence.entity.UserCredentialsEntity;
 import com.codewell.server.persistence.repository.UserCredentialsRepository;
 import com.codewell.server.persistence.repository.UserTokenRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.time.OffsetDateTime;
 
-@Component
+@Named
 @Singleton
 public class AuthServiceImpl implements AuthService
 {

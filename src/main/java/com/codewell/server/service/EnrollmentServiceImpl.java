@@ -10,15 +10,15 @@ import com.codewell.server.persistence.repository.EnrollmentRepository;
 import com.codewell.server.persistence.repository.SessionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+@Named
 @Singleton
 public class EnrollmentServiceImpl implements EnrollmentService
 {

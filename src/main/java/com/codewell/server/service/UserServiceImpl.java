@@ -1,7 +1,6 @@
 package com.codewell.server.service;
 
 import com.codewell.server.dto.UserDto;
-import com.codewell.server.dto.UserLearningModel;
 import com.codewell.server.persistence.entity.UserCredentialsEntity;
 import com.codewell.server.persistence.entity.UserEntity;
 import com.codewell.server.persistence.repository.UserCredentialsRepository;
@@ -11,10 +10,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Component
+@Named
 @Singleton
 public class UserServiceImpl implements UserService
 {
@@ -109,7 +108,6 @@ public class UserServiceImpl implements UserService
         original.setCity(userDto.getCity());
         original.setUpdatedAt(OffsetDateTime.now());
 
-//        userRepository.update(original);
         return this.mapToUserDto(userRepository.update(original));
     }
 
