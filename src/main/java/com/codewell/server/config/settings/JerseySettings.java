@@ -1,5 +1,6 @@
 package com.codewell.server.config.settings;
 
+import com.codewell.server.config.filter.CorsFilter;
 import com.codewell.server.config.filter.HttpAdminAuthenticationFilter;
 import com.codewell.server.config.filter.HttpAuthenticationFilter;
 import com.codewell.server.exception.ExceptionResponse;
@@ -57,6 +58,7 @@ public class JerseySettings extends ResourceConfig
 
     private void registerFilters()
     {
+        this.register(CorsFilter.class);
         this.register(HttpAuthenticationFilter.class);
         this.register(HttpAdminAuthenticationFilter.class);
     }
