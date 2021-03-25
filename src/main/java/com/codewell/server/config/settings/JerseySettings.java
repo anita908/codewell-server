@@ -45,6 +45,7 @@ public class JerseySettings extends ResourceConfig
         this.register(HomeworkController.class);
         this.register(LearningController.class);
         this.register(UserController.class);
+        this.register(DefaultController.class);
     }
 
     private void registerFilters()
