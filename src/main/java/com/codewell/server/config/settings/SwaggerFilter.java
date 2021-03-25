@@ -5,17 +5,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.codewell.server.config.settings.JerseySettings.CONTEXT_PATH;
+
 
 public class SwaggerFilter implements Filter
 {
-    private String contextPath;
-
     private static final String WEB_JAR_PATH = "webjars/swagger-ui/3.24.0/index.html";
-
-    public SwaggerFilter(final String contextPath)
-    {
-        this.contextPath = contextPath;
-    }
 
     @Override
     public void init(final FilterConfig filterConfig) {}
@@ -26,7 +21,7 @@ public class SwaggerFilter implements Filter
         final HttpServletRequest request = (HttpServletRequest) req;
         if (request.getRequestURI().equals("/"))
         {
-            final String requestUri = request.getRequestURI() + WEB_JAR_PATH + "?url=" + contextPath + "/openapi.json";
+            final String requestUri = request.getRequestURI() + WEB_JAR_PATH + "?url=" + CONTEXT_PATH + "/openapi.json";
             final HttpServletResponse response = (HttpServletResponse) res;
             response.sendRedirect(requestUri);
         }

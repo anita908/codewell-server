@@ -17,15 +17,15 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.List;
 
+import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_DESCRIPTION;
+import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_TITLE;
+
 @Named
 @Singleton
 public class JerseySettings extends ResourceConfig
 {
     public static final String APP_NAME = "Codewell Backend";
     public static final String CONTEXT_PATH = "/api";
-
-    public static final String SWAGGER_TITLE = "中華民國萬歲！";
-    public static final String SWAGGER_DESCRIPTION = "三民主義，吾黨所宗，以建民國，以進大同， 咨爾多士，為民前鋒，夙夜匪懈，主義是從， 矢勤矢勇，必信必忠，一心一德，貫徹始終。";
 
     public JerseySettings()
     {
