@@ -4,6 +4,10 @@ import com.codewell.server.annotation.JwtAuthenticationNeeded;
 import com.codewell.server.dto.AuthTokenDto;
 import com.codewell.server.dto.LoginDto;
 import com.codewell.server.service.AuthService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
@@ -11,7 +15,14 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_AUTH_NAME;
+import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_AUTH_SCHEME;
+import static io.swagger.v3.oas.annotations.enums.SecuritySchemeIn.HEADER;
+import static io.swagger.v3.oas.annotations.enums.SecuritySchemeType.HTTP;
+
 @Path("/v1/auth")
+@SecurityScheme(name = SWAGGER_AUTH_NAME, type = HTTP, scheme = SWAGGER_AUTH_SCHEME, in = HEADER)
+@Tag(name = "Auth Controller", description = "Manage auth resources")
 public class AuthController
 {
     private final AuthService authService;
@@ -36,10 +47,11 @@ public class AuthController
 
     @POST
     @JwtAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/refresh")
-    public AuthTokenDto refresh(@HeaderParam("Source-User-Id") final String userId)
+    public AuthTokenDto refresh(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId)
     {
         Assert.hasText(userId, "No userId provided");
         return authService.refreshUser(userId);
