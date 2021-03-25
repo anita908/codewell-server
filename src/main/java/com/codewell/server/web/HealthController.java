@@ -4,8 +4,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-@Path("/v1/default")
-public class DefaultController
+@Path("/v1/health")
+public class HealthController
 {
     @GET
     public Response getHealthStatus()
