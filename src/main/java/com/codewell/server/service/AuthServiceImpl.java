@@ -62,12 +62,8 @@ public class AuthServiceImpl implements AuthService
     }
 
     @Override
-    public void logoutUser(final String username)
+    public void logoutUser(final String userId)
     {
-        final UserCredentialsEntity savedCredentials = userCredentialsRepository.selectByUsername(username);
-        if (savedCredentials != null)
-        {
-            userTokenRepository.delete(savedCredentials.getUserId());
-        }
+        userTokenRepository.delete(userId);
     }
 }

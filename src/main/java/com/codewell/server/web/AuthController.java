@@ -58,11 +58,13 @@ public class AuthController
     }
 
     @DELETE
-    @Path("/logout/{username}")
-    public Response logout(@PathParam("username") final String username)
+    @JwtAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Path("/logout")
+    public Response logout(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId)
     {
-        Assert.hasText(username, "Username must be provided");
-        authService.logoutUser(username);
+        Assert.hasText(userId, "Username must be provided");
+        authService.logoutUser(userId);
         return Response.status(Response.Status.OK).build();
     }
 }

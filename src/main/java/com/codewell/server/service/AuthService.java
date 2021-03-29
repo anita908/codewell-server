@@ -6,5 +6,5 @@ public interface AuthService
 {
     AuthTokenDto loginUser(final String username, final String password);
     AuthTokenDto refreshUser(final String userId);
-    void logoutUser(final String username);
+    void logoutUser(final String userId);
 }
