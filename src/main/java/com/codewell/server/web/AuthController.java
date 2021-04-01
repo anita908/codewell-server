@@ -3,6 +3,7 @@ package com.codewell.server.web;
 import com.codewell.server.annotation.JwtAuthenticationNeeded;
 import com.codewell.server.dto.AuthTokenDto;
 import com.codewell.server.dto.LoginDto;
+import com.codewell.server.dto.UserCredentialsDto;
 import com.codewell.server.service.AuthService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -45,18 +46,6 @@ public class AuthController
         return authService.loginUser(loginDto.getUsername(), loginDto.getPassword());
     }
 
-    @POST
-    @JwtAuthenticationNeeded
-    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/refresh")
-    public AuthTokenDto refresh(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId)
-    {
-        Assert.hasText(userId, "No userId provided");
-        return authService.refreshUser(userId);
-    }
-
     @DELETE
     @JwtAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
@@ -66,5 +55,45 @@ public class AuthController
         Assert.hasText(userId, "Username must be provided");
         authService.logoutUser(userId);
         return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @JwtAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/refresh")
+    public AuthTokenDto refresh(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId)
+    {
+        Assert.hasText(userId, "No userId provided");
+        return authService.refreshUser(userId);
+    }
+
+    @PUT
+    @JwtAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/updateCredentials")
+    public Response updateLoginCredentials(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId, final UserCredentialsDto userCredentialsDto)
+    {
+        Assert.notNull(userCredentialsDto, "User payload must not be null");
+        Assert.hasText(userId, "No user id provided");
+        Assert.hasText(userCredentialsDto.getUsername(), "No username provided");
+        Assert.hasText(userCredentialsDto.getPassword(), "No password provided");
+
+        authService.updateUsernameAndPassword(userId, userCredentialsDto);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @JwtAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/reset/sendEmail")
+    public Response sendResetEmail(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId) throws Exception
+    {
+        Assert.hasText(userId, "No userId provided");
+        authService.sendPasswordResetEmail(userId);
+        return Response.status(Response.Status.OK).entity(String.format("Successfully sent password reset email to user: %s", userId)).build();
     }
 }

@@ -1,15 +1,13 @@
 package com.codewell.server.service;
 
+import com.codewell.server.dto.UserCredentialsDto;
 import com.codewell.server.dto.UserDto;
-import com.codewell.server.persistence.entity.UserCredentialsEntity;
 import com.codewell.server.persistence.entity.UserEntity;
-import com.codewell.server.persistence.repository.UserCredentialsRepository;
 import com.codewell.server.persistence.repository.UserRepository;
-import com.codewell.server.util.UserUtil;
+import com.codewell.server.util.DataValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
@@ -25,21 +23,18 @@ import java.util.stream.Collectors;
 @Singleton
 public class UserServiceImpl implements UserService
 {
+    private final AuthService authService;
     private final UserRepository userRepository;
-    private final UserCredentialsRepository userCredentialsRepository;
-    private final PasswordEncoder passwordEncoder;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
     private static final String NOT_ADMIN = "false";
 
     @Inject
-    public UserServiceImpl(final UserRepository userRepository,
-                           final UserCredentialsRepository userCredentialsRepository,
-                           final PasswordEncoder passwordEncoder)
+    public UserServiceImpl(final AuthService authService,
+                           final UserRepository userRepository)
     {
+        this.authService = authService;
         this.userRepository = userRepository;
-        this.userCredentialsRepository = userCredentialsRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -65,12 +60,11 @@ public class UserServiceImpl implements UserService
         newUser.setId(null);
         final String userId = UUID.randomUUID().toString();
         newUser.setUserId(userId);
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 
-        Assert.isTrue(UserUtil.hasValidUsername(newUser), "Username is not valid");
-        Assert.isTrue(UserUtil.hasValidEmail(newUser), "Email is not valid");
-        Assert.isTrue(UserUtil.hasValidAge(newUser), "Age must be greater than 0");
-        Assert.isTrue(UserUtil.hasValidAddress(newUser), "Address must only contain letters");
+        Assert.isTrue(DataValidator.isValidUsername(newUser.getUsername()), "Username is not valid");
+        Assert.isTrue(DataValidator.isValidEmail(newUser.getEmail()), "Email is not valid");
+        Assert.isTrue(DataValidator.isValidAge(newUser.getAge()), "Age must be greater than 0");
+        Assert.isTrue(DataValidator.isValidAddress(newUser.getCity()), "Address must only contain letters");
 
         if (StringUtils.isEmpty(newUser.getIsAdmin()))
         {
@@ -81,19 +75,16 @@ public class UserServiceImpl implements UserService
         LOGGER.info("Inserting new user into users table: {}", newUserEntity);
         userRepository.insert(newUserEntity);
 
-        final UserCredentialsEntity newCredentialsEntity = this.mapToUserCredentialsEntity(newUser);
-        LOGGER.info("Inserting new user credentials into credentials table: {}", newCredentialsEntity);
-        userCredentialsRepository.insert(newCredentialsEntity);
-
+        authService.createUsernameAndPassword(userId, new UserCredentialsDto(newUser.getUsername(), newUser.getPassword()));
         return this.getUserById(userId);
     }
 
     @Override
     public UserDto updateUser(final String userId, final UserDto userDto)
     {
-        Assert.isTrue(UserUtil.hasValidEmail(userDto), "Email is not valid");
-        Assert.isTrue(UserUtil.hasValidAge(userDto), "Age must be greater than 0");
-        Assert.isTrue(UserUtil.hasValidAddress(userDto), "Address must only contain letters");
+        Assert.isTrue(DataValidator.isValidEmail(userDto.getEmail()), "Email is not valid");
+        Assert.isTrue(DataValidator.isValidAge(userDto.getAge()), "Age must be greater than 0");
+        Assert.isTrue(DataValidator.isValidAddress(userDto.getCity()), "Address must only contain letters");
 
         final UserEntity original = userRepository.selectByUserId(userId);
         if (original == null)
@@ -111,26 +102,13 @@ public class UserServiceImpl implements UserService
         return this.mapToUserDto(userRepository.update(original));
     }
 
-    @Override
-    public void updateUsernameAndPassword(final String userId, final UserDto userDto)
-    {
-        Assert.isTrue(UserUtil.hasValidUsername(userDto), "Username is not valid");
-
-        final UserCredentialsEntity originalCredentials = userCredentialsRepository.select(userId);
-        if (originalCredentials == null)
-        {
-            throw new IllegalArgumentException(String.format("No login credentials found for user id: %s", userId));
-        }
-
-        originalCredentials.setUsername(userDto.getUsername());
-        originalCredentials.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        originalCredentials.setUpdatedAt(OffsetDateTime.now());
-
-        userCredentialsRepository.update(originalCredentials);
-    }
-
     private UserEntity mapToUserEntity(final UserDto userDto)
     {
+        if (userDto == null)
+        {
+            return null;
+        }
+
         final UserEntity userEntity = new UserEntity();
         userEntity.setId(userDto.getId());
         userEntity.setUserId(userDto.getUserId());
@@ -146,31 +124,18 @@ public class UserServiceImpl implements UserService
         return userEntity;
     }
 
-    private UserCredentialsEntity mapToUserCredentialsEntity(final UserDto userDto)
-    {
-        final UserCredentialsEntity userCredentialsEntity = new UserCredentialsEntity();
-        userCredentialsEntity.setUserId(userDto.getUserId());
-        userCredentialsEntity.setUsername(userDto.getUsername());
-        userCredentialsEntity.setPassword(userDto.getPassword());
-        final OffsetDateTime currentTime = OffsetDateTime.now();
-        userCredentialsEntity.setCreatedAt(currentTime);
-        userCredentialsEntity.setUpdatedAt(currentTime);
-        return userCredentialsEntity;
-    }
-
     private UserDto mapToUserDto(final UserEntity userEntity)
     {
-        return Optional.ofNullable(userEntity)
-            .map(entity -> UserDto.newBuilder()
-                .id(userEntity.getId())
-                .userId(userEntity.getUserId())
-                .email(userEntity.getEmail())
-                .firstName(userEntity.getFirstName())
-                .lastName(userEntity.getLastName())
-                .age(userEntity.getAge())
-                .city(userEntity.getCity())
-                .isAdmin(userEntity.getIsAdmin())
-                .build())
+        return Optional.ofNullable(userEntity).map(entity -> UserDto.newBuilder()
+            .id(userEntity.getId())
+            .userId(userEntity.getUserId())
+            .email(userEntity.getEmail())
+            .firstName(userEntity.getFirstName())
+            .lastName(userEntity.getLastName())
+            .age(userEntity.getAge())
+            .city(userEntity.getCity())
+            .isAdmin(userEntity.getIsAdmin())
+            .build())
             .orElse(null);
     }
 }

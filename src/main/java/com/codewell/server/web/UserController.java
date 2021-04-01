@@ -13,7 +13,6 @@ import org.springframework.util.Assert;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_AUTH_NAME;
 import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_AUTH_SCHEME;
@@ -55,6 +54,7 @@ public class UserController
         Assert.notNull(userDto, "User payload must not be null");
         Assert.hasText(userDto.getUsername(), "No username provided");
         Assert.hasText(userDto.getPassword(), "No password provided");
+        Assert.hasText(userDto.getEmail(), "No email provided");
         Assert.hasText(userDto.getFirstName(), "No first name provided");
         Assert.hasText(userDto.getLastName(), "No last name provided");
 
@@ -71,26 +71,10 @@ public class UserController
     {
         Assert.notNull(userDto, "User payload must not be null");
         Assert.hasText(userId, "No user id provided");
+        Assert.hasText(userDto.getEmail(), "No email provided");
         Assert.hasText(userDto.getFirstName(), "No first name provided");
         Assert.hasText(userDto.getLastName(), "No last name provided");
 
         return userService.updateUser(userId, userDto);
-    }
-
-    @PUT
-    @JwtAuthenticationNeeded
-    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/updateCredentials")
-    public Response updateLoginCredentials(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId, final UserDto userDto)
-    {
-        Assert.notNull(userDto, "User payload must not be null");
-        Assert.hasText(userId, "No user id provided");
-        Assert.hasText(userDto.getUsername(), "No username provided");
-        Assert.hasText(userDto.getPassword(), "No password provided");
-
-        userService.updateUsernameAndPassword(userId, userDto);
-        return Response.status(Response.Status.OK).build();
     }
 }
