@@ -98,7 +98,7 @@ public class AuthServiceImpl implements AuthService
     }
 
     @Override
-    public void updateUsernameAndPassword(final String userId, final UserCredentialsDto userCredentialsDto)
+    public void updatePassword(final String userId, final UserCredentialsDto userCredentialsDto)
     {
         Assert.isTrue(DataValidator.isValidUsername(userCredentialsDto.getUsername()), "Username is not valid");
 
@@ -106,6 +106,10 @@ public class AuthServiceImpl implements AuthService
         if (originalCredentials == null)
         {
             throw new IllegalArgumentException(String.format("No login credentials found for user id: %s", userId));
+        }
+        if (!originalCredentials.getUsername().equals(userCredentialsDto.getUsername()))
+        {
+            throw new IllegalArgumentException(String.format("Supplied username does not belong to userId: %s", userId));
         }
 
         originalCredentials.setUsername(userCredentialsDto.getUsername());

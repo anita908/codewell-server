@@ -9,6 +9,6 @@ public interface AuthService
     void logoutUser(final String userId);
     AuthTokenDto refreshUser(final String userId);
     void createUsernameAndPassword(final String userId, final UserCredentialsDto userCredentialsDto);
-    void updateUsernameAndPassword(final String userId, final UserCredentialsDto userCredentialsDto);
+    void updatePassword(final String userId, final UserCredentialsDto userCredentialsDto);
     void sendPasswordResetEmail(final String userId) throws Exception;
 }

@@ -74,14 +74,14 @@ public class AuthController
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/updateCredentials")
-    public Response updateLoginCredentials(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId, final UserCredentialsDto userCredentialsDto)
+    public Response updatePassword(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId, final UserCredentialsDto userCredentialsDto)
     {
         Assert.notNull(userCredentialsDto, "User payload must not be null");
         Assert.hasText(userId, "No user id provided");
         Assert.hasText(userCredentialsDto.getUsername(), "No username provided");
         Assert.hasText(userCredentialsDto.getPassword(), "No password provided");
 
-        authService.updateUsernameAndPassword(userId, userCredentialsDto);
+        authService.updatePassword(userId, userCredentialsDto);
         return Response.status(Response.Status.OK).build();
     }
 
