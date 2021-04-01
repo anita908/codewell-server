@@ -1,18 +1,13 @@
 package com.codewell.server.service;
 
 import com.codewell.server.dto.UserDto;
-import com.codewell.server.persistence.entity.UserCredentialsEntity;
 import com.codewell.server.persistence.entity.UserEntity;
-import com.codewell.server.persistence.repository.UserCredentialsRepository;
 import com.codewell.server.persistence.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,9 +25,7 @@ public class UserServiceImplTest
     @Mock
     private UserRepository userRepository;
     @Mock
-    private UserCredentialsRepository userCredentialsRepository;
-    @Spy
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private AuthService authService;
     @InjectMocks
     private UserServiceImpl target;
 
@@ -77,7 +70,7 @@ public class UserServiceImplTest
     {
         final UserEntity userEntity = this.createUserEntity();
         doNothing().when(userRepository).insert(any());
-        doNothing().when(userCredentialsRepository).insert(any());
+        doNothing().when(authService).createUsernameAndPassword(anyString(), any());
         when(userRepository.selectByUserId(anyString())).thenReturn(userEntity);
 
         final UserDto newUser = this.createNewUser();
@@ -93,7 +86,7 @@ public class UserServiceImplTest
     {
         final UserEntity userEntity = this.createUserEntity();
         doNothing().when(userRepository).insert(any());
-        doNothing().when(userCredentialsRepository).insert(any());
+        doNothing().when(authService).createUsernameAndPassword(anyString(), any());
         when(userRepository.selectByUserId(anyString())).thenReturn(userEntity);
 
         final UserDto newUser = this.createNewUser();
@@ -138,35 +131,6 @@ public class UserServiceImplTest
         final String userId = UUID.randomUUID().toString();
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> target.updateUser(userId, updateDto));
         assertEquals(exception.getMessage(), String.format("No record found for user id: %s", userId));
-    }
-
-    @Test
-    void test_updateUsernameAndPassword_success()
-    {
-        final UserCredentialsEntity originalCredentials = new UserCredentialsEntity();
-        originalCredentials.setUsername("username");
-        originalCredentials.setPassword("password");
-        final UserDto newCredentials = new UserDto();
-        newCredentials.setUsername("newUsername");
-        newCredentials.setPassword("newPassword");
-        when(userCredentialsRepository.select(anyString())).thenReturn(originalCredentials);
-
-        target.updateUsernameAndPassword(UUID.randomUUID().toString(), newCredentials);
-        assertEquals(originalCredentials.getUsername(), newCredentials.getUsername());
-        assertTrue(passwordEncoder.matches("newPassword", originalCredentials.getPassword()));
-    }
-
-    @Test
-    void test_updateUsernameAndPassword_userNotFound()
-    {
-        final UserDto newCredentials = new UserDto();
-        newCredentials.setUsername("newUsername");
-        newCredentials.setPassword("newPassword");
-        when(userCredentialsRepository.select(anyString())).thenReturn(null);
-
-        final String userId = UUID.randomUUID().toString();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> target.updateUsernameAndPassword(userId, newCredentials));
-        assertEquals(exception.getMessage(), String.format("No login credentials found for user id: %s", userId));
     }
 
     private void assertEqualDtoAndEntity(final UserDto userDto, final UserEntity userEntity)
