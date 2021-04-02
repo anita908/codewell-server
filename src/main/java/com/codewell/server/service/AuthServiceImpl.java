@@ -122,9 +122,9 @@ public class AuthServiceImpl implements AuthService
     @Override
     public void sendPasswordResetEmail(final String email) throws Exception
     {
-        Assert.hasText(email, "Email cannot be empty or null");
+        Assert.isTrue(DataValidator.isValidEmail(email), "Email is not valid");
 
-        final UserEntity userEntity = userRepository.selectByUserId(email);
+        final UserEntity userEntity = userRepository.selectByEmail(email);
         if (userEntity == null)
         {
             throw new IllegalArgumentException(String.format("User profile could not be found for given email: %s", email) );

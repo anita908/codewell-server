@@ -86,7 +86,6 @@ public class AuthController
     }
 
     @POST
-    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/reset/sendEmail/{emailAddress}")
     public Response sendResetEmail(@PathParam("emailAddress") final String email) throws Exception
