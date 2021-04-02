@@ -15,8 +15,9 @@ public class GradeEntity
     @Column(name = "session_id")
     private Integer sessionId;
 
-    @Column(name = "homework_id")
-    private Integer homeworkId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "homework_id")
+    private HomeworkEntity homework;
 
     @Column(name = "user_id")
     private String userId;
@@ -56,14 +57,14 @@ public class GradeEntity
         this.sessionId = sessionId;
     }
 
-    public Integer getHomeworkId()
+    public HomeworkEntity getHomework()
     {
-        return homeworkId;
+        return homework;
     }
 
-    public void setHomeworkId(Integer homeworkId)
+    public void setHomework(HomeworkEntity homework)
     {
-        this.homeworkId = homeworkId;
+        this.homework = homework;
     }
 
     public String getUserId()

@@ -8,5 +8,6 @@ import java.util.List;
 @Repository
 public interface GradeRepository extends BaseJpaRepository<GradeEntity, Integer>
 {
+    List<GradeEntity> selectByUserId(final String userId);
     List<GradeEntity> selectBySessionAndUser(final int sessionId, final String userId);
 }

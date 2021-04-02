@@ -52,7 +52,7 @@ public class UserLearningModel
 
         gradeEntities.forEach(gradeEntity ->
         {
-            final HomeworkProgressModel homeworkProgress = homeworkIdToProgressMap.get(gradeEntity.getHomeworkId());
+            final HomeworkProgressModel homeworkProgress = homeworkIdToProgressMap.get(gradeEntity.getHomework().getId());
             homeworkProgress.setHomeworkScore(gradeEntity.getScore());
             homeworkProgress.setSubmitted(gradeEntity.getSubmitted());
         });

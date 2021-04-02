@@ -10,7 +10,7 @@ public class GradeDto
     private Integer id;
     private Integer homeworkId;
     private String homeworkName;
-    private Float score;
+    private Double score;
     private OffsetDateTime dueDate;
     private String submitted = "false";
 
@@ -44,12 +44,12 @@ public class GradeDto
         this.homeworkName = homeworkName;
     }
 
-    public Float getScore()
+    public Double getScore()
     {
         return score;
     }
 
-    public void setScore(Float score)
+    public void setScore(Double score)
     {
         this.score = score;
     }

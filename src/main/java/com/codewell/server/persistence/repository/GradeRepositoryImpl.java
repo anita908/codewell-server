@@ -8,7 +8,16 @@ import java.util.List;
 @Repository
 public class GradeRepositoryImpl extends BaseJpaRepositoryImpl<GradeEntity, Integer> implements GradeRepository
 {
+    private static final String SELECT_BY_USER_ID = "SELECT g FROM GradeEntity g WHERE g.userId = :userId";
     private static final String SELECT_BY_SESSION_AND_USER = "SELECT g FROM GradeEntity g WHERE g.sessionId = :sessionId AND g.userId = :userId";
+
+    @Override
+    public List<GradeEntity> selectByUserId(final String userId)
+    {
+        return this.getEntityManager().createQuery(SELECT_BY_USER_ID, GradeEntity.class)
+            .setParameter("userId", userId)
+            .getResultList();
+    }
 
     @Override
     public List<GradeEntity> selectBySessionAndUser(final int sessionId, final String userId)

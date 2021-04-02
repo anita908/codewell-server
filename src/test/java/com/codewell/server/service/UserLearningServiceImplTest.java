@@ -233,7 +233,7 @@ public class UserLearningServiceImplTest
             final GradeEntity grade = new GradeEntity();
             grade.setId(gradeId.getAndIncrement());
             grade.setUserId(enrollment.getUserId());
-            grade.setHomeworkId(homework.getId());
+            grade.setHomework(homework);
             grade.setScore(100.0);
             grade.setDueAt(OffsetDateTime.now().plusDays(7L));
             grade.setSubmitted("true");
