@@ -5,7 +5,7 @@ branch-defaults:
 deploy:
   artifact: target/server.jar
 environment-defaults:
-  agile-codewell-server:
+  agile-codewell-server-env:
     branch: null
     repository: null
 global:
