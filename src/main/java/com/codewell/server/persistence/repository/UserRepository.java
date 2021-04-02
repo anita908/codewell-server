@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends BaseJpaRepository<UserEntity, Long>
 {
     UserEntity selectByUserId(final String userId);
+    UserEntity selectByEmail(final String email);
 }

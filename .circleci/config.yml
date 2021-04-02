@@ -48,7 +48,7 @@ jobs:
             sudo pip install awsebcli --upgrade
       - run:
           name: Deploy JAR
-          command: eb deploy $EBS_ENV
+          command: eb deploy $EBS_ENV -r us-west-2
 workflows:
   Test and Deploy:
     jobs:

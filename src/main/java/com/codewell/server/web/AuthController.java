@@ -86,14 +86,13 @@ public class AuthController
     }
 
     @POST
-    @JwtAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/reset/sendEmail")
-    public Response sendResetEmail(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId) throws Exception
+    @Path("/reset/sendEmail/{emailAddress}")
+    public Response sendResetEmail(@PathParam("emailAddress") final String email) throws Exception
     {
-        Assert.hasText(userId, "No userId provided");
-        authService.sendPasswordResetEmail(userId);
-        return Response.status(Response.Status.OK).entity(String.format("Successfully sent password reset email to user: %s", userId)).build();
+        Assert.hasText(email, "No email provided");
+        authService.sendPasswordResetEmail(email);
+        return Response.status(Response.Status.OK).entity(String.format("Successfully sent password reset email to: %s", email)).build();
     }
 }

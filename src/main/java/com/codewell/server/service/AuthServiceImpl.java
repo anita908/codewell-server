@@ -120,19 +120,18 @@ public class AuthServiceImpl implements AuthService
     }
 
     @Override
-    public void sendPasswordResetEmail(final String userId) throws Exception
+    public void sendPasswordResetEmail(final String email) throws Exception
     {
-        Assert.hasText(userId, "User id cannot be empty or null");
+        Assert.hasText(email, "Email cannot be empty or null");
 
-        final UserEntity userEntity = userRepository.selectByUserId(userId);
+        final UserEntity userEntity = userRepository.selectByUserId(email);
         if (userEntity == null)
         {
-            throw new IllegalArgumentException(String.format("User profile could not be found for give user id: %s", userId) );
+            throw new IllegalArgumentException(String.format("User profile could not be found for given email: %s", email) );
         }
         final String fullName = String.format("%s %s", userEntity.getFirstName(), userEntity.getLastName());
-        final String userEmail = userEntity.getEmail();
         final String message = String.format(RESET_PASSWORD_MESSAGE, fullName, "https://codewell-portal.web.app");
-        mailingService.sendEmail(userEmail, RESET_PASSWORD_SUBJECT, message);
+        mailingService.sendEmail(email, RESET_PASSWORD_SUBJECT, message);
     }
 
     private UserCredentialsEntity mapToUserCredentialsEntity(final UserCredentialsDto userCredentialsDto)
