@@ -120,18 +120,21 @@ public class AuthServiceImpl implements AuthService
     }
 
     @Override
-    public void sendPasswordResetEmail(final String email) throws Exception
+    public void sendPasswordResetEmail(final String emailAddress, final String linkBaseUrl) throws Exception
     {
-        Assert.isTrue(DataValidator.isValidEmail(email), "Email is not valid");
+        Assert.isTrue(DataValidator.isValidEmail(emailAddress), "Email is not valid");
 
-        final UserEntity userEntity = userRepository.selectByEmail(email);
+        final UserEntity userEntity = userRepository.selectByEmail(emailAddress);
         if (userEntity == null)
         {
-            throw new IllegalArgumentException(String.format("User profile could not be found for given email: %s", email) );
+            throw new IllegalArgumentException(String.format("User profile could not be found for given email: %s", emailAddress) );
         }
+
+        final String jwtToken = jwtService.assignJwtToken(userEntity.getUserId());
         final String fullName = String.format("%s %s", userEntity.getFirstName(), userEntity.getLastName());
-        final String message = String.format(RESET_PASSWORD_MESSAGE, fullName, "https://codewell-portal.web.app");
-        mailingService.sendEmail(email, RESET_PASSWORD_SUBJECT, message);
+        final String linkUrl = String.format("%s?token=%s", linkBaseUrl, jwtToken);
+        final String message = String.format(RESET_PASSWORD_MESSAGE, fullName, linkUrl);
+        mailingService.sendEmail(emailAddress, RESET_PASSWORD_SUBJECT, message);
     }
 
     private UserCredentialsEntity mapToUserCredentialsEntity(final UserCredentialsDto userCredentialsDto)

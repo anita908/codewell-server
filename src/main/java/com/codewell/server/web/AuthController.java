@@ -28,6 +28,9 @@ public class AuthController
 {
     private final AuthService authService;
 
+    private static final String RESET_LINK_LOCAL_URL = "http://localhost:3000/resetPassword";
+    private static final String RESET_LINK_PRODUCTION_UL = "https://codewell-portal.web.app/resetPassword";
+
     @Inject
     public AuthController(final AuthService authService)
     {
@@ -88,10 +91,12 @@ public class AuthController
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/reset/sendEmail/{emailAddress}")
-    public Response sendResetEmail(@PathParam("emailAddress") final String email) throws Exception
+    public Response sendResetEmail(@PathParam("emailAddress") final String emailAddress, @QueryParam("local") final boolean local) throws Exception
     {
-        Assert.hasText(email, "No email provided");
-        authService.sendPasswordResetEmail(email);
-        return Response.status(Response.Status.OK).entity(String.format("Successfully sent password reset email to: %s", email)).build();
+        Assert.hasText(emailAddress, "No email provided");
+
+        final String linkBaseUrl = local ? RESET_LINK_LOCAL_URL : RESET_LINK_PRODUCTION_UL;
+        authService.sendPasswordResetEmail(emailAddress, linkBaseUrl);
+        return Response.status(Response.Status.OK).entity(String.format("Successfully sent password reset email to: %s", emailAddress)).build();
     }
 }

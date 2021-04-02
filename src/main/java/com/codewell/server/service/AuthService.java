@@ -10,5 +10,5 @@ public interface AuthService
     AuthTokenDto refreshUser(final String userId);
     void createUsernameAndPassword(final String userId, final UserCredentialsDto userCredentialsDto);
     void updatePassword(final String userId, final UserCredentialsDto userCredentialsDto);
-    void sendPasswordResetEmail(final String email) throws Exception;
+    void sendPasswordResetEmail(final String emailAddress, final String linkBaseUrl) throws Exception;
 }
