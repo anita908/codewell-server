@@ -61,10 +61,13 @@ public class UserServiceImpl implements UserService
         final String userId = UUID.randomUUID().toString();
         newUser.setUserId(userId);
 
+        newUser.setCity(StringUtils.capitalize(newUser.getCity()));
+        newUser.setState(StringUtils.capitalize(newUser.getState()));
+
         Assert.isTrue(DataValidator.isValidUsername(newUser.getUsername()), "Username is not valid");
         Assert.isTrue(DataValidator.isValidEmail(newUser.getEmail()), "Email is not valid");
-        Assert.isTrue(DataValidator.isValidAge(newUser.getAge()), "Age must be greater than 0");
-        Assert.isTrue(DataValidator.isValidAddress(newUser.getCity()), "Address must only contain letters");
+        Assert.isTrue(DataValidator.isValidCity(newUser.getCity()), "City must only contain letters");
+        Assert.isTrue(DataValidator.isValidState(newUser.getState()), "State is not valid");
 
         if (StringUtils.isEmpty(newUser.getIsAdmin()))
         {
@@ -82,9 +85,12 @@ public class UserServiceImpl implements UserService
     @Override
     public UserDto updateUser(final String userId, final UserDto userDto)
     {
+        userDto.setCity(StringUtils.capitalize(userDto.getCity()));
+        userDto.setState(StringUtils.capitalize(userDto.getState()));
+
         Assert.isTrue(DataValidator.isValidEmail(userDto.getEmail()), "Email is not valid");
-        Assert.isTrue(DataValidator.isValidAge(userDto.getAge()), "Age must be greater than 0");
-        Assert.isTrue(DataValidator.isValidAddress(userDto.getCity()), "Address must only contain letters");
+        Assert.isTrue(DataValidator.isValidCity(userDto.getCity()), "City must only contain letters");
+        Assert.isTrue(DataValidator.isValidState(userDto.getState()), "State is not valid");
 
         final UserEntity original = userRepository.selectByUserId(userId);
         if (original == null)
@@ -95,8 +101,9 @@ public class UserServiceImpl implements UserService
         original.setEmail(userDto.getEmail());
         original.setFirstName(userDto.getFirstName());
         original.setLastName(userDto.getLastName());
-        original.setAge(userDto.getAge());
+        original.setBirthdate(userDto.getBirthdate());
         original.setCity(userDto.getCity());
+        original.setState(userDto.getState());
         original.setUpdatedAt(OffsetDateTime.now());
 
         return this.mapToUserDto(userRepository.update(original));
@@ -115,8 +122,9 @@ public class UserServiceImpl implements UserService
         userEntity.setEmail(userDto.getEmail());
         userEntity.setFirstName(userDto.getFirstName());
         userEntity.setLastName(userDto.getLastName());
-        userEntity.setAge(userDto.getAge());
+        userEntity.setBirthdate(userDto.getBirthdate());
         userEntity.setCity(userDto.getCity());
+        userEntity.setState(userDto.getState());
         userEntity.setIsAdmin(userDto.getIsAdmin());
         final OffsetDateTime currentTime = OffsetDateTime.now();
         userEntity.setCreatedAt(currentTime);
@@ -132,8 +140,9 @@ public class UserServiceImpl implements UserService
             .email(userEntity.getEmail())
             .firstName(userEntity.getFirstName())
             .lastName(userEntity.getLastName())
-            .age(userEntity.getAge())
+            .birthdate(userEntity.getBirthdate())
             .city(userEntity.getCity())
+            .state(userEntity.getState())
             .isAdmin(userEntity.getIsAdmin())
             .build())
             .orElse(null);

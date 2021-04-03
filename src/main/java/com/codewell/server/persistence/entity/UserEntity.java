@@ -24,11 +24,14 @@ public class UserEntity
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "age")
-    private Integer age;
+    @Column(name = "birthdate")
+    private OffsetDateTime birthdate;
 
     @Column(name = "city")
     private String city;
+
+    @Column(name = "state")
+    private String state;
 
     @Column(name = "is_admin")
     private String isAdmin;
@@ -89,14 +92,14 @@ public class UserEntity
         this.lastName = lastName;
     }
 
-    public Integer getAge()
+    public OffsetDateTime getBirthdate()
     {
-        return age;
+        return birthdate;
     }
 
-    public void setAge(Integer age)
+    public void setBirthdate(OffsetDateTime birthdate)
     {
-        this.age = age;
+        this.birthdate = birthdate;
     }
 
     public String getCity()
@@ -107,6 +110,16 @@ public class UserEntity
     public void setCity(String city)
     {
         this.city = city;
+    }
+
+    public String getState()
+    {
+        return state;
+    }
+
+    public void setState(String state)
+    {
+        this.state = state;
     }
 
     public String getIsAdmin()

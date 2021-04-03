@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -105,8 +106,9 @@ public class UserServiceImplTest
         updateDto.setEmail("newemail@gmail.com");
         updateDto.setFirstName("New");
         updateDto.setLastName("Test");
-        updateDto.setAge(10);
+        updateDto.setBirthdate(OffsetDateTime.now().minusYears(10));
         updateDto.setCity("New City");
+        updateDto.setCity("New York");
 
         when(userRepository.selectByUserId(anyString())).thenReturn(userEntity);
         when(userRepository.update(any())).thenReturn(userEntity);
@@ -118,8 +120,9 @@ public class UserServiceImplTest
         assertEquals(updatedUser.getEmail(), updateDto.getEmail());
         assertEquals(updatedUser.getFirstName(), updateDto.getFirstName());
         assertEquals(updatedUser.getLastName(), updateDto.getLastName());
-        assertEquals(updatedUser.getAge(), updateDto.getAge());
+        assertEquals(updatedUser.getBirthdate(), updateDto.getBirthdate());
         assertEquals(updatedUser.getCity(), updateDto.getCity());
+        assertEquals(updatedUser.getState(), updateDto.getState());
     }
 
     @Test
@@ -140,8 +143,9 @@ public class UserServiceImplTest
         assertEquals(userDto.getEmail(), userEntity.getEmail());
         assertEquals(userDto.getFirstName(), userEntity.getFirstName());
         assertEquals(userDto.getLastName(), userEntity.getLastName());
-        assertEquals(userDto.getAge(), userEntity.getAge());
+        assertEquals(userDto.getBirthdate(), userEntity.getBirthdate());
         assertEquals(userDto.getCity(), userEntity.getCity());
+        assertEquals(userDto.getState(), userEntity.getState());
         assertEquals(userDto.getIsAdmin(), userEntity.getIsAdmin());
     }
 
@@ -152,8 +156,9 @@ public class UserServiceImplTest
         userEntity.setEmail("test@gmail.com");
         userEntity.setFirstName("Test");
         userEntity.setLastName("Name");
-        userEntity.setAge(8);
+        userEntity.setBirthdate(OffsetDateTime.now().minusYears(8));
         userEntity.setCity("Test City");
+        userEntity.setState("Utah");
         userEntity.setIsAdmin("true");
         return userEntity;
     }
@@ -167,8 +172,9 @@ public class UserServiceImplTest
         userDto.setEmail("test@gmail.com");
         userDto.setFirstName("Test");
         userDto.setLastName("Name");
-        userDto.setAge(8);
+        userDto.setBirthdate(OffsetDateTime.now().minusYears(8));
         userDto.setCity("Test City");
+        userDto.setState("Utah");
 
         return userDto;
     }

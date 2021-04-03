@@ -2,6 +2,8 @@ package com.codewell.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.time.OffsetDateTime;
+
 public class UserDto
 {
     private Integer id;
@@ -9,8 +11,9 @@ public class UserDto
     private String email;
     private String firstName;
     private String lastName;
-    private Integer age;
+    private OffsetDateTime birthdate;
     private String city;
+    private String state;
     private String isAdmin;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,8 +35,9 @@ public class UserDto
         private String password;
         private String firstName;
         private String lastName;
-        private Integer age;
+        private OffsetDateTime birthdate;
         private String city;
+        private String state;
         private String isAdmin;
 
         public Builder id(Integer id)
@@ -78,15 +82,21 @@ public class UserDto
             return this;
         }
 
-        public Builder age(Integer age)
+        public Builder birthdate(OffsetDateTime birthdate)
         {
-            this.age = age;
+            this.birthdate = birthdate;
             return this;
         }
 
         public Builder city(String city)
         {
             this.city = city;
+            return this;
+        }
+
+        public Builder state(String state)
+        {
+            this.state = state;
             return this;
         }
 
@@ -106,8 +116,9 @@ public class UserDto
             userDto.setPassword(this.password);
             userDto.setFirstName(this.firstName);
             userDto.setLastName(this.lastName);
-            userDto.setAge(this.age);
+            userDto.setBirthdate(this.birthdate);
             userDto.setCity(this.city);
+            userDto.setState(this.state);
             userDto.setIsAdmin(this.isAdmin);
             return userDto;
         }
@@ -184,14 +195,14 @@ public class UserDto
         this.lastName = lastName;
     }
 
-    public Integer getAge()
+    public OffsetDateTime getBirthdate()
     {
-        return age;
+        return birthdate;
     }
 
-    public void setAge(Integer age)
+    public void setBirthdate(OffsetDateTime birthdate)
     {
-        this.age = age;
+        this.birthdate = birthdate;
     }
 
     public String getCity()
@@ -202,6 +213,16 @@ public class UserDto
     public void setCity(String city)
     {
         this.city = city;
+    }
+
+    public String getState()
+    {
+        return state;
+    }
+
+    public void setState(String state)
+    {
+        this.state = state;
     }
 
     public String getIsAdmin()

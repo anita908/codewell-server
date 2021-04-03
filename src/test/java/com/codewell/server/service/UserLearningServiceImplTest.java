@@ -6,7 +6,6 @@ import com.codewell.server.persistence.repository.ActivityRepository;
 import com.codewell.server.persistence.repository.EnrollmentRepository;
 import com.codewell.server.persistence.repository.GradeRepository;
 import com.codewell.server.persistence.repository.HomeworkRepository;
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +41,12 @@ public class UserLearningServiceImplTest
     private UserLearningServiceImpl target;
 
     private UserDto userDto;
+    private final AtomicInteger sessionId = new AtomicInteger(1);
+    private final AtomicInteger courseId = new AtomicInteger(1);
+    private final AtomicInteger chapterId = new AtomicInteger(1);
+    private final AtomicInteger activityId = new AtomicInteger(1);
+    private final AtomicInteger homeworkId = new AtomicInteger(1);
+    private final AtomicInteger gradeId = new AtomicInteger(1);
     private List<EnrollmentEntity> enrollments;
     private List<ActivityEntity> activities_1;
     private List<ActivityEntity> activities_2;
@@ -49,12 +54,6 @@ public class UserLearningServiceImplTest
     private List<HomeworkEntity> homeworks_2;
     private List<GradeEntity> grades_1;
     private List<GradeEntity> grades_2;
-    private AtomicInteger sessionId = new AtomicInteger(1);
-    private AtomicInteger courseId = new AtomicInteger(1);
-    private AtomicInteger chapterId = new AtomicInteger(1);
-    private AtomicInteger activityId = new AtomicInteger(1);
-    private AtomicInteger homeworkId = new AtomicInteger(1);
-    private AtomicInteger gradeId = new AtomicInteger(1);
 
     @BeforeEach
     void setup()
@@ -252,8 +251,9 @@ public class UserLearningServiceImplTest
         userDto.setEmail("test@gmail.com");
         userDto.setFirstName("Test");
         userDto.setLastName("Name");
-        userDto.setAge(8);
+        userDto.setBirthdate(OffsetDateTime.now().minusYears(8));
         userDto.setCity("Test City");
+        userDto.setState("Utah");
         userDto.setIsAdmin("false");
 
         return userDto;
