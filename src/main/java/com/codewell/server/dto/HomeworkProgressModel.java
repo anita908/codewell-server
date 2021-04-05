@@ -1,5 +1,7 @@
 package com.codewell.server.dto;
 
+import java.time.OffsetDateTime;
+
 public class HomeworkProgressModel
 {
     private Integer homeworkId;
@@ -7,6 +9,7 @@ public class HomeworkProgressModel
     private String homeworkLink;
     private Double homeworkScore;
     private String submitted = "false";
+    private OffsetDateTime dueDate;
 
     public Integer getHomeworkId()
     {
@@ -56,5 +59,15 @@ public class HomeworkProgressModel
     public void setSubmitted(String submitted)
     {
         this.submitted = submitted;
+    }
+
+    public OffsetDateTime getDueDate()
+    {
+        return dueDate;
+    }
+
+    public void setDueDate(OffsetDateTime dueDate)
+    {
+        this.dueDate = dueDate;
     }
 }

@@ -55,6 +55,7 @@ public class UserLearningModel
             final HomeworkProgressModel homeworkProgress = homeworkIdToProgressMap.get(gradeEntity.getHomework().getId());
             homeworkProgress.setHomeworkScore(gradeEntity.getScore());
             homeworkProgress.setSubmitted(gradeEntity.getSubmitted());
+            homeworkProgress.setDueDate(gradeEntity.getDueAt());
         });
     }
 
