@@ -2,10 +2,9 @@ package com.codewell.server.config.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.codewell.server.annotation.JwtAuthenticationNeeded;
+import com.codewell.server.exception.ExceptionResponse;
 import com.codewell.server.persistence.entity.UserTokenEntity;
 import com.codewell.server.persistence.repository.UserTokenRepository;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.time.OffsetDateTime;
@@ -45,38 +43,28 @@ public class HttpAuthenticationFilter implements ContainerRequestFilter
     @Override
     public void filter(ContainerRequestContext requestContext) throws IllegalArgumentException
     {
-        final String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null)
-        {
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("No auth token provided").build());
-            return;
-        }
         try
         {
+            final String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+            if (authHeader == null)
+            {
+                throw new IllegalArgumentException("No auth token provided");
+            }
             final String jwtToken = authHeader.substring(BEARER.length()).trim();
             final Claim userIdClaim = JWT.decode(jwtToken).getClaim(USER_ID);
             if (userIdClaim.isNull())
             {
-                final String message = "No user id provided in jwt";
-                LOGGER.info(message);
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(message).build());
-                return;
+                throw new IllegalArgumentException("No user id provided in jwt");
             }
             final String userId = userIdClaim.asString();
             final UserTokenEntity userTokenEntity = userTokenRepository.select(userId);
             if (userTokenEntity == null)
             {
-                final String message = String.format("No prior token found for user id: %s", userId);
-                LOGGER.info(message);
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(message).build());
-                return;
+                throw new IllegalArgumentException(String.format("No prior token found for user id: %s", userId));
             }
             if (!jwtToken.equals(userTokenEntity.getToken()))
             {
-                final String message = "Received jwt that doesn't match with database record";
-                LOGGER.info(message);
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(message).build());
-                return;
+                throw new IllegalArgumentException("Received jwt that doesn't match with database record");
             }
             JWT.require(ALGORITHM)
                 .withIssuer(ISSUER)
@@ -86,23 +74,16 @@ public class HttpAuthenticationFilter implements ContainerRequestFilter
                 .verify(jwtToken);
             if (userTokenEntity.getExpireDate().isBefore(OffsetDateTime.now()))
             {
-                final String message = String.format("Received expired JWT token: %s", jwtToken);
-                LOGGER.info(message);
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(message).build());
+                throw new IllegalArgumentException(String.format("Received expired JWT token: %s", jwtToken));
             }
             requestContext.getHeaders().add("Source-User-Id", userId);
         }
-        catch (JWTDecodeException exception)
+        catch (Exception exception)
         {
-            final String message = String.format("JWT is in wrong format: %s", exception.getMessage());
-            LOGGER.error(message);
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(message).build());
-        }
-        catch (JWTVerificationException exception)
-        {
-            final String message = String.format("JWT verification failed: %s", exception.getMessage());
-            LOGGER.error(message);
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity(message).build());
+            LOGGER.error(exception.getMessage());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                .entity(new ExceptionResponse(exception))
+                .build());
         }
     }
 }

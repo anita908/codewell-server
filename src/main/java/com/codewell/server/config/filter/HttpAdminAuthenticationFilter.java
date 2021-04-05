@@ -1,6 +1,7 @@
 package com.codewell.server.config.filter;
 
 import com.codewell.server.annotation.AdminAuthenticationNeeded;
+import com.codewell.server.exception.ExceptionResponse;
 import com.codewell.server.persistence.entity.UserEntity;
 import com.codewell.server.persistence.repository.UserRepository;
 import com.codewell.server.persistence.repository.UserTokenRepository;
@@ -42,7 +43,9 @@ public class HttpAdminAuthenticationFilter extends HttpAuthenticationFilter
         final UserEntity user = userRepository.selectByUserId(userId);
         if (!TRUE.equals(user.getIsAdmin()))
         {
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).entity("User is not an admin").build());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
+                .entity(new ExceptionResponse(new IllegalArgumentException(String.format("User: %s is not an admin", userId))))
+                .build());
         }
     }
 }

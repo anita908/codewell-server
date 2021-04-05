@@ -2,6 +2,7 @@ package com.codewell.server.web;
 
 import com.codewell.server.annotation.JwtAuthenticationNeeded;
 import com.codewell.server.dto.AuthTokenDto;
+import com.codewell.server.dto.GenericResponseDto;
 import com.codewell.server.dto.LoginDto;
 import com.codewell.server.dto.UserCredentialsDto;
 import com.codewell.server.service.AuthService;
@@ -14,7 +15,6 @@ import org.springframework.util.Assert;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_AUTH_NAME;
 import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_AUTH_SCHEME;
@@ -52,12 +52,13 @@ public class AuthController
     @DELETE
     @JwtAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/logout")
-    public Response logout(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId)
+    public GenericResponseDto logout(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId)
     {
         Assert.hasText(userId, "Username must be provided");
         authService.logoutUser(userId);
-        return Response.status(Response.Status.OK).build();
+        return new GenericResponseDto(String.format("Successfully logged out user id: %s", userId));
     }
 
     @POST
@@ -77,7 +78,7 @@ public class AuthController
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/updateCredentials")
-    public Response updatePassword(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId, final UserCredentialsDto userCredentialsDto)
+    public GenericResponseDto updatePassword(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId, final UserCredentialsDto userCredentialsDto)
     {
         Assert.notNull(userCredentialsDto, "User payload must not be null");
         Assert.hasText(userId, "No user id provided");
@@ -85,18 +86,18 @@ public class AuthController
         Assert.hasText(userCredentialsDto.getPassword(), "No password provided");
 
         authService.updatePassword(userId, userCredentialsDto);
-        return Response.status(Response.Status.OK).build();
+        return new GenericResponseDto(String.format("Successfully updated password for user id: %s", userId));
     }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/reset/sendEmail/{emailAddress}")
-    public Response sendResetEmail(@PathParam("emailAddress") final String emailAddress, @QueryParam("local") final boolean local) throws Exception
+    public GenericResponseDto sendResetEmail(@PathParam("emailAddress") final String emailAddress, @QueryParam("local") final boolean local) throws Exception
     {
         Assert.hasText(emailAddress, "No email provided");
 
         final String linkBaseUrl = local ? RESET_LINK_LOCAL_URL : RESET_LINK_PRODUCTION_UL;
         authService.sendPasswordResetEmail(emailAddress, linkBaseUrl);
-        return Response.status(Response.Status.OK).entity(String.format("Successfully sent password reset email to: %s", emailAddress)).build();
+        return new GenericResponseDto(String.format("Successfully sent password reset email to: %s", emailAddress));
     }
 }
