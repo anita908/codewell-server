@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService
         }
 
         final UserEntity newUserEntity = this.mapToUserEntity(newUser);
-        LOGGER.info("Inserting new user into users table: {}", newUserEntity);
+        LOGGER.info("Inserting new user into users table: {}", newUserEntity.toString());
         userRepository.insert(newUserEntity);
 
         authService.createUsernameAndPassword(userId, new UserCredentialsDto(newUser.getUsername(), newUser.getPassword()));

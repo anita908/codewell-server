@@ -22,14 +22,18 @@ import java.util.stream.Collectors;
 @Singleton
 public class EnrollmentServiceImpl implements EnrollmentService
 {
+    private final GradesService gradesService;
     private final EnrollmentRepository enrollmentRepository;
     private final SessionRepository sessionRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EnrollmentServiceImpl.class);
 
     @Inject
-    public EnrollmentServiceImpl(final EnrollmentRepository enrollmentRepository, final SessionRepository sessionRepository)
+    public EnrollmentServiceImpl(final GradesService gradesService,
+                                 final EnrollmentRepository enrollmentRepository,
+                                 final SessionRepository sessionRepository)
     {
+        this.gradesService = gradesService;
         this.enrollmentRepository = enrollmentRepository;
         this.sessionRepository = sessionRepository;
     }
@@ -70,12 +74,15 @@ public class EnrollmentServiceImpl implements EnrollmentService
         newEnrollment.setSession(targetSession);
         newEnrollment.setUserId(userId);
         newEnrollment.setEnrollDate(currentTime);
+        newEnrollment.setCurrentChapter(1);
         newEnrollment.setGraduated("false");
         newEnrollment.setOverallGrade(100.0);
         newEnrollment.setCreatedAt(currentTime);
         newEnrollment.setUpdatedAt(currentTime);
-
+        LOGGER.info("Inserting new enrollment into enrollment table: {}", newEnrollment.toString());
         enrollmentRepository.insert(newEnrollment);
+
+        gradesService.createDefaultGradesForUser(userId, targetSession);
 
         return this.getEnrollmentById(newEnrollment.getId());
     }

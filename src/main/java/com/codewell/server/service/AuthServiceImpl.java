@@ -92,7 +92,7 @@ public class AuthServiceImpl implements AuthService
         userCredentialsDto.setPassword(passwordEncoder.encode(userCredentialsDto.getPassword()));
         final UserCredentialsEntity newCredentialsEntity = this.mapToUserCredentialsEntity(userCredentialsDto);
         newCredentialsEntity.setUserId(userId);
-        LOGGER.info("Inserting new user credentials into credentials table: {}", newCredentialsEntity);
+        LOGGER.info("Inserting new user credentials into credentials table: {}", newCredentialsEntity.toString());
 
         userCredentialsRepository.insert(newCredentialsEntity);
     }

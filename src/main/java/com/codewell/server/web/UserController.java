@@ -44,8 +44,6 @@ public class UserController
     }
 
     @POST
-    @JwtAuthenticationNeeded
-    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/create")
