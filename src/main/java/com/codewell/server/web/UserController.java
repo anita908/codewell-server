@@ -54,7 +54,6 @@ public class UserController
         Assert.hasText(userDto.getPassword(), "No password provided");
         Assert.hasText(userDto.getEmail(), "No email provided");
         Assert.hasText(userDto.getFirstName(), "No first name provided");
-        Assert.hasText(userDto.getLastName(), "No last name provided");
 
         return userService.createUser(userDto);
     }
