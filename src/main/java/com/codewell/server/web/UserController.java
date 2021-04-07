@@ -43,21 +43,6 @@ public class UserController
         return userService.getUserById(userId);
     }
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create")
-    public UserDto createNewUser(final UserDto userDto)
-    {
-        Assert.notNull(userDto, "User payload must not be null");
-        Assert.hasText(userDto.getUsername(), "No username provided");
-        Assert.hasText(userDto.getPassword(), "No password provided");
-        Assert.hasText(userDto.getEmail(), "No email provided");
-        Assert.hasText(userDto.getFirstName(), "No first name provided");
-
-        return userService.createUser(userDto);
-    }
-
     @PUT
     @JwtAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)

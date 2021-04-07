@@ -10,10 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import java.util.List;
@@ -40,7 +37,8 @@ public class GradesController
     @JwtAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Produces(MediaType.APPLICATION_JSON)
-    public List<GradeDto> getGrades(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId)
+    public List<GradeDto> getGrades(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId,
+                                    @QueryParam("sessionId") final Integer sessionId)
     {
         Assert.hasText(userId, "User id not provided");
         return gradeService.getAllGradesForUser(userId);

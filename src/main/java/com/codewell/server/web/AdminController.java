@@ -6,11 +6,10 @@ import com.codewell.server.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.util.Assert;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -30,6 +29,22 @@ public class AdminController
     public AdminController(final UserService userService)
     {
         this.userService = userService;
+    }
+
+    @POST
+    @AdminAuthenticationNeeded
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/create")
+    public UserDto createNewUser(final UserDto userDto)
+    {
+        Assert.notNull(userDto, "User payload must not be null");
+        Assert.hasText(userDto.getUsername(), "No username provided");
+        Assert.hasText(userDto.getPassword(), "No password provided");
+        Assert.hasText(userDto.getEmail(), "No email provided");
+        Assert.hasText(userDto.getFirstName(), "No first name provided");
+
+        return userService.createUser(userDto);
     }
 
     @GET
