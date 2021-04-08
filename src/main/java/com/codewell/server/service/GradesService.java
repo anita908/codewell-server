@@ -8,5 +8,6 @@ import java.util.List;
 public interface GradesService
 {
     void createDefaultGradesForUser(final String userId, final SessionEntity session);
-    List<GradeDto> getAllGradesForUser(final String userId);
+    List<GradeDto> getGradesForUser(final String userId, final Integer sessionId);
+    GradeDto modifyGrade(final String userId, final Integer sessionId, final GradeDto gradeDto);
 }

@@ -39,7 +39,7 @@ public class LearningController
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/progress")
-    public UserLearningModel getUserHomepageData(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId) throws Exception
+    public UserLearningModel getUserLearningProgress(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId) throws Exception
     {
         Assert.hasText(userId, "User id cannot be null");
         return userLearningService.getUserLearningModel(userId);

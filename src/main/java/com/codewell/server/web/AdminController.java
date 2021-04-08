@@ -1,8 +1,13 @@
 package com.codewell.server.web;
 
 import com.codewell.server.annotation.AdminAuthenticationNeeded;
+import com.codewell.server.dto.GradeDto;
 import com.codewell.server.dto.UserDto;
+import com.codewell.server.dto.UserLearningModel;
+import com.codewell.server.service.GradesService;
+import com.codewell.server.service.UserLearningService;
 import com.codewell.server.service.UserService;
+import com.codewell.server.util.DataValidator;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,27 +29,17 @@ import static io.swagger.v3.oas.annotations.enums.SecuritySchemeType.HTTP;
 public class AdminController
 {
     private final UserService userService;
+    private final UserLearningService userLearningService;
+    private final GradesService gradesService;
 
     @Inject
-    public AdminController(final UserService userService)
+    public AdminController(final UserService userService,
+                           final UserLearningService userLearningService,
+                           final GradesService gradesService)
     {
         this.userService = userService;
-    }
-
-    @POST
-    @AdminAuthenticationNeeded
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/create")
-    public UserDto createNewUser(final UserDto userDto)
-    {
-        Assert.notNull(userDto, "User payload must not be null");
-        Assert.hasText(userDto.getUsername(), "No username provided");
-        Assert.hasText(userDto.getPassword(), "No password provided");
-        Assert.hasText(userDto.getEmail(), "No email provided");
-        Assert.hasText(userDto.getFirstName(), "No first name provided");
-
-        return userService.createUser(userDto);
+        this.userLearningService = userLearningService;
+        this.gradesService = gradesService;
     }
 
     @GET
@@ -55,5 +50,54 @@ public class AdminController
     public List<UserDto> getAllUsers()
     {
         return userService.getAllUsers();
+    }
+
+    @POST
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/users/create")
+    public UserDto createNewUser(final UserDto userDto)
+    {
+        Assert.notNull(userDto, "User payload must not be null");
+        Assert.hasText(userDto.getUsername(), "No username provided");
+        Assert.hasText(userDto.getPassword(), "No password provided");
+        Assert.hasText(userDto.getEmail(), "No email provided");
+        Assert.hasText(userDto.getFirstName(), "No first name provided");
+        Assert.isTrue(DataValidator.isValidBoolean(userDto.getIsAdmin()), "Is admin field is not a valid boolean value");
+
+        return userService.createUser(userDto);
+    }
+
+    @GET
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/learning/{userId}")
+    public UserLearningModel getUserLearningProgress(@PathParam("userId") final String userId) throws Exception
+    {
+        Assert.hasText(userId, "User id not provided");
+        return userLearningService.getUserLearningModel(userId);
+    }
+
+    @PUT
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/grades/update")
+    public GradeDto updateGrade(@QueryParam("userId") final String userId,
+                                @QueryParam("sessionId") final Integer sessionId,
+                                final GradeDto gradeDto)
+    {
+        Assert.hasText(userId, "User id not provided");
+        Assert.notNull(sessionId, "Session id not provided");
+        Assert.notNull(gradeDto, "Grade dto cannot be null");
+        Assert.notNull(gradeDto.getHomeworkId(), "Homework id cannot be null");
+        Assert.hasText(gradeDto.getSubmitted(), "Submitted flag cannot be null");
+        Assert.isTrue(DataValidator.isValidBoolean(gradeDto.getSubmitted()), "Submitted flag is not a valid boolean value");
+
+        return gradesService.modifyGrade(userId, sessionId, gradeDto);
     }
 }

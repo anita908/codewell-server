@@ -78,7 +78,7 @@ public class UserLearningServiceImplTest
             when(enrollmentRepository.selectByUserId(anyString())).thenReturn(enrollments);
             when(activityRepository.selectByCourseId(anyInt())).thenReturn(activities_1, activities_2);
             when(homeworkRepository.selectByCourseId(anyInt())).thenReturn(homeworks_1, homeworks_2);
-            when(gradeRepository.selectBySessionAndUser(anyInt(), anyString())).thenReturn(grades_1, grades_2);
+            when(gradeRepository.selectByUserAndSession(anyString(), anyInt())).thenReturn(grades_1, grades_2);
 
             userLearningModel = target.getUserLearningModel(userDto.getUserId());
         }

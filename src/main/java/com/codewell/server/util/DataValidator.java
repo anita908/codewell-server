@@ -33,4 +33,9 @@ public class DataValidator
     {
         return state == null || STATES.contains(state);
     }
+
+    public static boolean isValidBoolean(final String booleanString)
+    {
+        return StringUtils.isEmpty(booleanString) || "true".equals(booleanString) || "false".equals(booleanString);
+    }
 }

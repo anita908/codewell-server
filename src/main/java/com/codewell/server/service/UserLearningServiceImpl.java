@@ -65,7 +65,7 @@ public class UserLearningServiceImpl implements UserLearningService
             {
                 Future<List<ActivityEntity>> activitiesFuture = executor.submit(() -> activityRepository.selectByCourseId(session.getCourseId()));
                 Future<List<HomeworkEntity>> homeworkFuture = executor.submit(() -> homeworkRepository.selectByCourseId(session.getCourseId()));
-                Future<List<GradeEntity>> gradesFuture = executor.submit(() -> gradeRepository.selectBySessionAndUser(session.getSessionId(), userId));
+                Future<List<GradeEntity>> gradesFuture = executor.submit(() -> gradeRepository.selectByUserAndSession(userId, session.getSessionId()));
                 userLearningModel.coalesceAssignmentsAndGrades(session, activitiesFuture.get(), homeworkFuture.get(), gradesFuture.get());
             }
             executor.shutdown();

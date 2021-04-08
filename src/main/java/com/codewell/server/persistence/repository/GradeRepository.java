@@ -9,5 +9,6 @@ import java.util.List;
 public interface GradeRepository extends BaseJpaRepository<GradeEntity, Integer>
 {
     List<GradeEntity> selectByUserId(final String userId);
-    List<GradeEntity> selectBySessionAndUser(final int sessionId, final String userId);
+    List<GradeEntity> selectByUserAndSession(final String userId, final int sessionId);
+    GradeEntity selectByUserSessionAndHomeworkId(final String userId, final int sessionId, final int homeworkId);
 }

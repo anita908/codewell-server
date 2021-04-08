@@ -1,10 +1,7 @@
 package com.codewell.server.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.time.OffsetDateTime;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GradeDto
 {
     private Integer id;

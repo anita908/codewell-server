@@ -62,12 +62,43 @@ public class GradesServiceImpl implements GradesService
     }
 
     @Override
-    public List<GradeDto> getAllGradesForUser(final String userId)
+    public List<GradeDto> getGradesForUser(final String userId, final Integer sessionId)
     {
-        return gradeRepository.selectByUserId(userId)
-            .stream()
+        Assert.hasText(userId, "User id not provided");
+        List<GradeEntity> grades;
+        if (sessionId == null)
+        {
+            grades = gradeRepository.selectByUserId(userId);
+        }
+        else
+        {
+            grades = gradeRepository.selectByUserAndSession(userId, sessionId);
+        }
+        return grades.stream()
             .map(this::mapToGradeDto)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public GradeDto modifyGrade(final String userId, final Integer sessionId, final GradeDto gradeDto)
+    {
+        Assert.hasText(userId, "User id not provided");
+        Assert.notNull(sessionId, "Session id not provided");
+        Assert.notNull(gradeDto, "Grade dto cannot be null");
+        Assert.notNull(gradeDto.getHomeworkId(), "Homework id cannot be null");
+        Assert.hasText(gradeDto.getSubmitted(), "Submitted flag cannot be null");
+
+        final GradeEntity originalGrade = gradeRepository.selectByUserSessionAndHomeworkId(userId, sessionId, gradeDto.getHomeworkId());
+        if (originalGrade == null)
+        {
+            throw new IllegalArgumentException("Could not find grade record for given query parameters");
+        }
+
+        originalGrade.setScore(gradeDto.getScore());
+        originalGrade.setDueAt(gradeDto.getDueDate());
+        originalGrade.setSubmitted(gradeDto.getSubmitted());
+
+        return mapToGradeDto(gradeRepository.update(originalGrade));
     }
 
     private GradeDto mapToGradeDto(final GradeEntity gradeEntity)

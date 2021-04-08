@@ -41,6 +41,6 @@ public class GradesController
                                     @QueryParam("sessionId") final Integer sessionId)
     {
         Assert.hasText(userId, "User id not provided");
-        return gradeService.getAllGradesForUser(userId);
+        return gradeService.getGradesForUser(userId, sessionId);
     }
 }
