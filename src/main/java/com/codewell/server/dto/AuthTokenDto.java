@@ -9,14 +9,16 @@ public class AuthTokenDto
 {
     private String result;
     private String jwt;
+    private boolean isAdmin;
     private OffsetDateTime tokenAssignDate;
 
     public AuthTokenDto() {}
 
-    public AuthTokenDto(final String result, final String jwt, final OffsetDateTime tokenAssignDate)
+    public AuthTokenDto(final String result, final String jwt, final boolean isAdmin, final OffsetDateTime tokenAssignDate)
     {
         this.result = result;
         this.jwt = jwt;
+        this.isAdmin = isAdmin;
         this.tokenAssignDate = tokenAssignDate;
     }
 
@@ -38,6 +40,16 @@ public class AuthTokenDto
     public void setJwt(String jwt)
     {
         this.jwt = jwt;
+    }
+
+    public boolean getIsAdmin()
+    {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(boolean isAdmin)
+    {
+        this.isAdmin = isAdmin;
     }
 
     public OffsetDateTime getTokenAssignDate()

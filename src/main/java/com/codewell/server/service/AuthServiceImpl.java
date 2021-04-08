@@ -58,18 +58,16 @@ public class AuthServiceImpl implements AuthService
     public AuthTokenDto loginUser(final String username, final String password)
     {
         final UserCredentialsEntity savedCredentials = userCredentialsRepository.selectByUsername(username);
-        if (savedCredentials == null) {
+        if (savedCredentials == null)
+        {
             throw new IllegalArgumentException(String.format("Username: %s doesn't exist", username));
 
         }
-        if (!passwordEncoder.matches(password, savedCredentials.getPassword())) {
+        if (!passwordEncoder.matches(password, savedCredentials.getPassword()))
+        {
             throw new IllegalArgumentException(String.format("Incorrect password for username: %s", username));
         }
-        final AuthTokenDto authTokenDto = new AuthTokenDto();
-        authTokenDto.setResult(SUCCESS);
-        authTokenDto.setJwt(jwtService.assignJwtToken(savedCredentials.getUserId()));
-        authTokenDto.setTokenAssignDate(OffsetDateTime.now());
-        return authTokenDto;
+        return this.refreshUser(savedCredentials.getUserId());
     }
 
     @Override
@@ -81,7 +79,12 @@ public class AuthServiceImpl implements AuthService
     @Override
     public AuthTokenDto refreshUser(final String userId)
     {
-        return new AuthTokenDto(SUCCESS, jwtService.assignJwtToken(userId), OffsetDateTime.now());
+        final UserEntity userData = userRepository.selectByUserId(userId);
+        if (userData == null)
+        {
+            throw new IllegalArgumentException(String.format("User id: %s doesn't exist", userId));
+        }
+        return new AuthTokenDto(SUCCESS, jwtService.assignJwtToken(userId), Boolean.parseBoolean(userData.getIsAdmin()), OffsetDateTime.now());
     }
 
     @Override
