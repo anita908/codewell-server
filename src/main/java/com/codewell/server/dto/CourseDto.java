@@ -2,8 +2,6 @@ package com.codewell.server.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.List;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CourseDto
 {
@@ -11,7 +9,7 @@ public class CourseDto
     private String name;
     private Integer ageLower;
     private Integer ageUpper;
-    private Float price;
+    private Double price;
 
     public Integer getId()
     {
@@ -53,12 +51,12 @@ public class CourseDto
         this.ageUpper = ageUpper;
     }
 
-    public Float getPrice()
+    public Double getPrice()
     {
         return price;
     }
 
-    public void setPrice(Float price)
+    public void setPrice(Double price)
     {
         this.price = price;
     }

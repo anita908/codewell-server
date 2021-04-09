@@ -2,12 +2,15 @@ package com.codewell.server.web;
 
 import com.codewell.server.annotation.AdminAuthenticationNeeded;
 import com.codewell.server.dto.GradeDto;
+import com.codewell.server.dto.SessionDto;
 import com.codewell.server.dto.UserDto;
 import com.codewell.server.dto.UserLearningModel;
 import com.codewell.server.service.GradesService;
+import com.codewell.server.service.SessionService;
 import com.codewell.server.service.UserLearningService;
 import com.codewell.server.service.UserService;
 import com.codewell.server.util.DataValidator;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,15 +33,18 @@ public class AdminController
 {
     private final UserService userService;
     private final UserLearningService userLearningService;
+    private final SessionService sessionService;
     private final GradesService gradesService;
 
     @Inject
     public AdminController(final UserService userService,
                            final UserLearningService userLearningService,
+                           final SessionService sessionService,
                            final GradesService gradesService)
     {
         this.userService = userService;
         this.userLearningService = userLearningService;
+        this.sessionService = sessionService;
         this.gradesService = gradesService;
     }
 
@@ -79,6 +85,17 @@ public class AdminController
     {
         Assert.hasText(userId, "User id not provided");
         return userLearningService.getUserLearningModel(userId);
+    }
+
+    @GET
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/sessions/teaching")
+    public List<SessionDto> getTeachingSessions(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String adminUserId)
+    {
+        Assert.hasText(adminUserId, "Admin user id not provided");
+        return sessionService.getSessionsTaughtByAdmin(adminUserId);
     }
 
     @PUT

@@ -16,6 +16,9 @@ public class SessionEntity
     @JoinColumn(name = "course_id")
     private CourseEntity course;
 
+    @Column(name = "teacher_id")
+    private String teacherId;
+
     @Column(name = "begin_date")
     private OffsetDateTime beginDate;
 
@@ -46,6 +49,16 @@ public class SessionEntity
     public void setCourse(CourseEntity course)
     {
         this.course = course;
+    }
+
+    public String getTeacherId()
+    {
+        return teacherId;
+    }
+
+    public void setTeacherId(String teacherId)
+    {
+        this.teacherId = teacherId;
     }
 
     public OffsetDateTime getBeginDate()
