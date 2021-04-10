@@ -55,6 +55,16 @@ public class EnrollmentServiceImpl implements EnrollmentService
     }
 
     @Override
+    public List<EnrollmentDto> getEnrollmentsBySession(final Integer sessionId)
+    {
+        LOGGER.info("Fetching enrollment records by session id: {}", sessionId);
+        return enrollmentRepository.selectBySessionId(sessionId)
+            .stream()
+            .map(this::mapToEnrollmentDto)
+            .collect(Collectors.toList());
+    }
+
+    @Override
     public EnrollmentDto enrollStudentToSession(final String userId, final int sessionId)
     {
         final SessionEntity targetSession = sessionRepository.select(sessionId);

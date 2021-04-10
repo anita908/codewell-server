@@ -1,5 +1,6 @@
 package com.codewell.server.service;
 
+import com.codewell.server.dto.EnrollmentDto;
 import com.codewell.server.dto.UserCredentialsDto;
 import com.codewell.server.dto.UserDto;
 import com.codewell.server.persistence.entity.UserEntity;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService
 {
     private final AuthService authService;
+    private final EnrollmentService enrollmentService;
     private final UserRepository userRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -31,9 +33,11 @@ public class UserServiceImpl implements UserService
 
     @Inject
     public UserServiceImpl(final AuthService authService,
+                           final EnrollmentService enrollmentService,
                            final UserRepository userRepository)
     {
         this.authService = authService;
+        this.enrollmentService = enrollmentService;
         this.userRepository = userRepository;
     }
 
@@ -42,6 +46,18 @@ public class UserServiceImpl implements UserService
     {
         LOGGER.info("Getting data for all users");
         return userRepository.selectAll()
+            .stream()
+            .map(this::mapToUserDto)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserDto> getUsersInSession(final Integer sessionId)
+    {
+        final List<EnrollmentDto> enrollments = enrollmentService.getEnrollmentsBySession(sessionId);
+        return userRepository.selectByUserIds(enrollments.stream()
+            .map(EnrollmentDto::getUserId)
+            .collect(Collectors.toList()))
             .stream()
             .map(this::mapToUserDto)
             .collect(Collectors.toList());

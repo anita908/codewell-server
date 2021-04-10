@@ -53,9 +53,16 @@ public class AdminController
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/users")
-    public List<UserDto> getAllUsers()
+    public List<UserDto> getAllUsers(@QueryParam("sessionId") final Integer sessionId)
     {
-        return userService.getAllUsers();
+        if (sessionId != null)
+        {
+            return userService.getUsersInSession(sessionId);
+        }
+        else
+        {
+            return userService.getAllUsers();
+        }
     }
 
     @POST
