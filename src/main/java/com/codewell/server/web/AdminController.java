@@ -1,14 +1,8 @@
 package com.codewell.server.web;
 
 import com.codewell.server.annotation.AdminAuthenticationNeeded;
-import com.codewell.server.dto.GradeDto;
-import com.codewell.server.dto.SessionDto;
-import com.codewell.server.dto.UserDto;
-import com.codewell.server.dto.UserLearningModel;
-import com.codewell.server.service.GradesService;
-import com.codewell.server.service.SessionService;
-import com.codewell.server.service.UserLearningService;
-import com.codewell.server.service.UserService;
+import com.codewell.server.dto.*;
+import com.codewell.server.service.*;
 import com.codewell.server.util.DataValidator;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -34,17 +28,20 @@ public class AdminController
     private final UserService userService;
     private final UserLearningService userLearningService;
     private final SessionService sessionService;
+    private final EnrollmentService enrollmentService;
     private final GradesService gradesService;
 
     @Inject
     public AdminController(final UserService userService,
                            final UserLearningService userLearningService,
                            final SessionService sessionService,
+                           final EnrollmentService enrollmentService,
                            final GradesService gradesService)
     {
         this.userService = userService;
         this.userLearningService = userLearningService;
         this.sessionService = sessionService;
+        this.enrollmentService = enrollmentService;
         this.gradesService = gradesService;
     }
 
@@ -83,6 +80,20 @@ public class AdminController
         return userService.createUser(userDto);
     }
 
+    @POST
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/enroll")
+    public EnrollmentDto enrollStudent(@QueryParam("userId") final String userId,
+                                       @QueryParam("sessionId") final Integer sessionId)
+    {
+        Assert.hasText(userId, "User id must be provided");
+        Assert.notNull(sessionId, "Session id must be provided");
+
+        return enrollmentService.enrollStudentToSession(userId, sessionId);
+    }
+
     @GET
     @AdminAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
@@ -103,6 +114,18 @@ public class AdminController
     {
         Assert.hasText(adminUserId, "Admin user id not provided");
         return sessionService.getSessionsTaughtByAdmin(adminUserId);
+    }
+
+    @GET
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/grades/{userId}")
+    public List<GradeDto> getGrades(@PathParam("userId") final String userId,
+                                    @QueryParam("sessionId") final Integer sessionId)
+    {
+        Assert.hasText(userId, "User id not provided");
+        return gradesService.getGradesForUser(userId, sessionId);
     }
 
     @PUT

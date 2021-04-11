@@ -41,17 +41,4 @@ public class EnrollmentController
         Assert.hasText(userId, "User id must be provided");
         return enrollmentService.getEnrollmentsByUser(userId);
     }
-
-    @POST
-    @JwtAuthenticationNeeded
-    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/enroll")
-    public EnrollmentDto enrollStudent(@Parameter(hidden =true) @HeaderParam("Source-User-Id") final String userId, @QueryParam("sessionId") final int sessionId)
-    {
-        Assert.hasText(userId, "User id must be provided");
-        Assert.isTrue(sessionId > 0, "Session id must be provided");
-
-        return enrollmentService.enrollStudentToSession(userId, sessionId);
-    }
 }

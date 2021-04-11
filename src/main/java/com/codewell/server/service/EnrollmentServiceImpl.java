@@ -65,7 +65,7 @@ public class EnrollmentServiceImpl implements EnrollmentService
     }
 
     @Override
-    public EnrollmentDto enrollStudentToSession(final String userId, final int sessionId)
+    public EnrollmentDto enrollStudentToSession(final String userId, final Integer sessionId)
     {
         final SessionEntity targetSession = sessionRepository.select(sessionId);
         if (targetSession == null)
@@ -89,7 +89,7 @@ public class EnrollmentServiceImpl implements EnrollmentService
         newEnrollment.setOverallGrade(100.0);
         newEnrollment.setCreatedAt(currentTime);
         newEnrollment.setUpdatedAt(currentTime);
-        LOGGER.info("Inserting new enrollment into enrollment table: {}", newEnrollment.toString());
+        LOGGER.info("Inserting new enrollment into enrollment table: {}", newEnrollment);
         enrollmentRepository.insert(newEnrollment);
 
         gradesService.createDefaultGradesForUser(userId, targetSession);
