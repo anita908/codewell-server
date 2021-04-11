@@ -8,5 +8,7 @@ public interface EnrollmentService
 {
     List<EnrollmentDto> getEnrollmentsByUser(final String userId);
     List<EnrollmentDto> getEnrollmentsBySession(final Integer sessionId);
+    EnrollmentDto getEnrollmentByUserAndSession(final String userId, final Integer sessionId);
     EnrollmentDto enrollStudentToSession(final String userId, final Integer sessionId);
+    EnrollmentDto updateEnrollmentRecord(final EnrollmentDto enrollmentDto);
 }

@@ -10,5 +10,5 @@ public interface EnrollmentRepository extends BaseJpaRepository<EnrollmentEntity
 {
     List<EnrollmentEntity> selectByUserId(final String userId);
     List<EnrollmentEntity> selectBySessionId(final int sessionId);
-    EnrollmentEntity selectBySessionAndUser(final int sessionId, final String userId);
+    EnrollmentEntity selectByUserAndSession(final String userId, final int sessionId);
 }

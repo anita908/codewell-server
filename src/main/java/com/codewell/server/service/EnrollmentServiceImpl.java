@@ -1,15 +1,13 @@
 package com.codewell.server.service;
 
-import com.codewell.server.dto.CourseDto;
 import com.codewell.server.dto.EnrollmentDto;
-import com.codewell.server.dto.SessionDto;
-import com.codewell.server.persistence.entity.CourseEntity;
 import com.codewell.server.persistence.entity.EnrollmentEntity;
 import com.codewell.server.persistence.entity.SessionEntity;
 import com.codewell.server.persistence.repository.EnrollmentRepository;
 import com.codewell.server.persistence.repository.SessionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -65,6 +63,13 @@ public class EnrollmentServiceImpl implements EnrollmentService
     }
 
     @Override
+    public EnrollmentDto getEnrollmentByUserAndSession(final String userId, final Integer sessionId)
+    {
+        LOGGER.info("Fetching enrollment records by user id:{} and session id: {}", userId, sessionId);
+        return this.mapToEnrollmentDto(enrollmentRepository.selectByUserAndSession(userId, sessionId));
+    }
+
+    @Override
     public EnrollmentDto enrollStudentToSession(final String userId, final Integer sessionId)
     {
         final SessionEntity targetSession = sessionRepository.select(sessionId);
@@ -73,7 +78,7 @@ public class EnrollmentServiceImpl implements EnrollmentService
             throw new IllegalArgumentException(String.format("No session found for session id: %s", sessionId));
         }
 
-        final EnrollmentEntity existingEnrollment = enrollmentRepository.selectBySessionAndUser(sessionId, userId);
+        final EnrollmentEntity existingEnrollment = enrollmentRepository.selectByUserAndSession(userId, sessionId);
         if (existingEnrollment != null)
         {
             throw new IllegalArgumentException(String.format("User: %s is already enrolled in this session", userId));
@@ -97,33 +102,50 @@ public class EnrollmentServiceImpl implements EnrollmentService
         return this.getEnrollmentById(newEnrollment.getId());
     }
 
+    @Override
+    public EnrollmentDto updateEnrollmentRecord(final EnrollmentDto enrollmentDto)
+    {
+        Assert.notNull(enrollmentDto, "Enrollment dto cannot be null");
+        Assert.notNull(enrollmentDto.getId(), "Enrollment id not provided");
+
+        final EnrollmentEntity existingEnrollment = enrollmentRepository.select(enrollmentDto.getId());
+        if (existingEnrollment == null)
+        {
+            throw new IllegalArgumentException(String.format("No enrollment record found for enrollment id: %s", enrollmentDto.getId()));
+        }
+        if (!existingEnrollment.getUserId().equals(enrollmentDto.getUserId()))
+        {
+            throw new IllegalArgumentException(String.format("User id provided does not match existing enrollment record: %s", enrollmentDto.getUserId()));
+        }
+        final SessionEntity targetSession = sessionRepository.select(enrollmentDto.getSessionId());
+        if (targetSession == null)
+        {
+            throw new IllegalArgumentException(String.format("No session found for session id: %s", enrollmentDto.getSessionId()));
+        }
+
+        existingEnrollment.setSession(targetSession);
+        existingEnrollment.setEnrollDate(enrollmentDto.getEnrollDate());
+        existingEnrollment.setCurrentChapter(enrollmentDto.getCurrentChapter());
+        existingEnrollment.setGraduated(enrollmentDto.getGraduated());
+        existingEnrollment.setOverallGrade(enrollmentDto.getOverallGrade());
+        existingEnrollment.setUpdatedAt(OffsetDateTime.now());
+        return this.mapToEnrollmentDto(enrollmentRepository.update(existingEnrollment));
+    }
+
     private EnrollmentDto mapToEnrollmentDto(final EnrollmentEntity enrollmentEntity)
     {
+        if (enrollmentEntity == null)
+        {
+            return null;
+        }
         final EnrollmentDto enrollmentDto = new EnrollmentDto();
         enrollmentDto.setId(enrollmentEntity.getId());
-        enrollmentDto.setSession(this.mapToSessionDto(enrollmentEntity.getSession()));
+        enrollmentDto.setSessionId(enrollmentEntity.getSession().getId());
         enrollmentDto.setUserId(enrollmentEntity.getUserId());
         enrollmentDto.setEnrollDate(enrollmentEntity.getEnrollDate());
+        enrollmentDto.setCurrentChapter(enrollmentEntity.getCurrentChapter());
         enrollmentDto.setOverallGrade(enrollmentEntity.getOverallGrade());
         enrollmentDto.setGraduated(enrollmentEntity.getGraduated());
         return enrollmentDto;
-    }
-
-    private SessionDto mapToSessionDto(final SessionEntity sessionEntity)
-    {
-        final SessionDto sessionDto = new SessionDto();
-        sessionDto.setId(sessionEntity.getId());
-        sessionDto.setCourse(this.mapToCourseDto(sessionEntity.getCourse()));
-        sessionDto.setBeginDate(sessionEntity.getBeginDate());
-        sessionDto.setEndDate(sessionEntity.getEndDate());
-        return sessionDto;
-    }
-
-    private CourseDto mapToCourseDto(final CourseEntity courseEntity)
-    {
-        final CourseDto courseDto = new CourseDto();
-        courseDto.setId(courseEntity.getId());
-        courseDto.setName(courseEntity.getName());
-        return courseDto;
     }
 }

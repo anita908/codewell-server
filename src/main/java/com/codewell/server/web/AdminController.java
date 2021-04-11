@@ -8,11 +8,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_AUTH_NAME;
@@ -80,11 +82,25 @@ public class AdminController
         return userService.createUser(userDto);
     }
 
+    @GET
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/enrollment")
+    public EnrollmentDto getEnrollment(@QueryParam("userId") final String userId,
+                                       @QueryParam("sessionId") final Integer sessionId)
+    {
+        Assert.hasText(userId, "User id must be provided");
+        Assert.notNull(sessionId, "Session id must be provided");
+
+        return enrollmentService.getEnrollmentByUserAndSession(userId, sessionId);
+    }
+
     @POST
     @AdminAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/enroll")
+    @Path("/enrollment/enroll")
     public EnrollmentDto enrollStudent(@QueryParam("userId") final String userId,
                                        @QueryParam("sessionId") final Integer sessionId)
     {
@@ -92,6 +108,25 @@ public class AdminController
         Assert.notNull(sessionId, "Session id must be provided");
 
         return enrollmentService.enrollStudentToSession(userId, sessionId);
+    }
+
+    @PUT
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/enrollment/update")
+    public EnrollmentDto updateEnrollment(final EnrollmentDto enrollmentDto)
+    {
+        Assert.notNull(enrollmentDto, "Enrollment dto cannot be null");
+        Assert.notNull(enrollmentDto.getId(), "Enrollment id not provided");
+        Assert.notNull(enrollmentDto.getSessionId(), "Session id not provided");
+        Assert.hasText(enrollmentDto.getUserId(), "User id not provided");
+        Assert.notNull(enrollmentDto.getEnrollDate(), "Enrollment date not provided");
+        Assert.notNull(enrollmentDto.getCurrentChapter(), "Current chapter not provided");
+        Assert.notNull(enrollmentDto.getGraduated(), "Graduation flag not provided");
+        Assert.notNull(enrollmentDto.getOverallGrade(), "Overall grade not provided");
+
+        return enrollmentService.updateEnrollmentRecord(enrollmentDto);
     }
 
     @GET
@@ -146,5 +181,27 @@ public class AdminController
         Assert.isTrue(DataValidator.isValidBoolean(gradeDto.getSubmitted()), "Submitted flag is not a valid boolean value");
 
         return gradesService.modifyGrade(userId, sessionId, gradeDto);
+    }
+
+    @PUT
+    @AdminAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/grades/update/bulk")
+    public List<GradeDto> bulkUpdateGrades(@QueryParam("userId") final String userId,
+                                           @QueryParam("sessionId") final Integer sessionId,
+                                           final List<GradeDto> gradeDtos) throws InterruptedException
+    {
+        Assert.hasText(userId, "User id not provided");
+        Assert.notNull(sessionId, "Session id not provided");
+        Assert.notNull(gradeDtos, "Grade dto list cannot be null");
+        gradeDtos.forEach(gradeDto ->
+        {
+            Assert.notNull(gradeDto.getHomeworkId(), "Homework id cannot be null");
+            Assert.hasText(gradeDto.getSubmitted(), "Submitted flag cannot be null");
+            Assert.isTrue(DataValidator.isValidBoolean(gradeDto.getSubmitted()), "Submitted flag is not a valid boolean value");
+        });
+        return gradesService.bulkModifyGrades(userId, sessionId, gradeDtos);
     }
 }

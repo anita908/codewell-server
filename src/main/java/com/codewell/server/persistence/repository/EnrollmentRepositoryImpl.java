@@ -10,8 +10,8 @@ public class EnrollmentRepositoryImpl extends BaseJpaRepositoryImpl<EnrollmentEn
 {
     private static final String SELECT_BY_USER_ID = "SELECT e FROM EnrollmentEntity e WHERE e.userId = :userId";
     private static final String SELECT_BY_SESSION_ID = "SELECT e FROM EnrollmentEntity e WHERE e.session.id = :sessionId";
-    private static final String SELECT_BY_SESSION_AND_USER = "SELECT e FROM EnrollmentEntity e " +
-        "WHERE e.session.id = :sessionId AND e.userId = :userId";
+    private static final String SELECT_BY_USER_AND_SESSION = "SELECT e FROM EnrollmentEntity e " +
+        "WHERE e.userId = :userId AND e.session.id = :sessionId";
 
     @Override
     public List<EnrollmentEntity> selectByUserId(final String userId)
@@ -30,11 +30,11 @@ public class EnrollmentRepositoryImpl extends BaseJpaRepositoryImpl<EnrollmentEn
     }
 
     @Override
-    public EnrollmentEntity selectBySessionAndUser(final int sessionId, final String userId)
+    public EnrollmentEntity selectByUserAndSession(final String userId, final int sessionId)
     {
-        return this.getEntityManager().createQuery(SELECT_BY_SESSION_AND_USER, EnrollmentEntity.class)
-            .setParameter("sessionId", sessionId)
+        return this.getEntityManager().createQuery(SELECT_BY_USER_AND_SESSION, EnrollmentEntity.class)
             .setParameter("userId", userId)
+            .setParameter("sessionId", sessionId)
             .getResultStream()
             .findFirst()
             .orElse(null);

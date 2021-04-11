@@ -1,16 +1,14 @@
 package com.codewell.server.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.time.OffsetDateTime;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class EnrollmentDto
 {
     private Integer id;
-    private SessionDto session;
+    private Integer sessionId;
     private String userId;
     private OffsetDateTime enrollDate;
+    private Integer currentChapter;
     private String graduated;
     private Double overallGrade;
 
@@ -24,14 +22,14 @@ public class EnrollmentDto
         this.id = id;
     }
 
-    public SessionDto getSession()
+    public Integer getSessionId()
     {
-        return session;
+        return sessionId;
     }
 
-    public void setSession(SessionDto session)
+    public void setSessionId(Integer sessionId)
     {
-        this.session = session;
+        this.sessionId = sessionId;
     }
 
     public String getUserId()
@@ -52,6 +50,16 @@ public class EnrollmentDto
     public void setEnrollDate(OffsetDateTime enrollDate)
     {
         this.enrollDate = enrollDate;
+    }
+
+    public Integer getCurrentChapter()
+    {
+        return currentChapter;
+    }
+
+    public void setCurrentChapter(Integer currentChapter)
+    {
+        this.currentChapter = currentChapter;
     }
 
     public String getGraduated()
