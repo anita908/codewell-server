@@ -22,6 +22,9 @@ public class GradeEntity
     @Column(name = "user_id")
     private String userId;
 
+    @Column(name = "submission_url")
+    private String submissionUrl;
+
     @Column(name = "score")
     private Double score;
 
@@ -75,6 +78,16 @@ public class GradeEntity
     public void setUserId(String userId)
     {
         this.userId = userId;
+    }
+
+    public String getSubmissionUrl()
+    {
+        return submissionUrl;
+    }
+
+    public void setSubmissionUrl(String submissionUrl)
+    {
+        this.submissionUrl = submissionUrl;
     }
 
     public Double getScore()

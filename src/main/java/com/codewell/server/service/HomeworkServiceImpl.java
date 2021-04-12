@@ -2,14 +2,17 @@ package com.codewell.server.service;
 
 import com.codewell.server.dto.HomeworkDto;
 import com.codewell.server.dto.HomeworkVideoDto;
+import com.codewell.server.persistence.entity.GradeEntity;
 import com.codewell.server.persistence.entity.HomeworkEntity;
 import com.codewell.server.persistence.entity.HomeworkVideoEntity;
+import com.codewell.server.persistence.repository.GradeRepository;
 import com.codewell.server.persistence.repository.HomeworkRepository;
 import com.codewell.server.persistence.repository.HomeworkVideoRepository;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,12 +22,16 @@ public class HomeworkServiceImpl implements HomeworkService
 {
     private final HomeworkRepository homeworkRepository;
     private final HomeworkVideoRepository homeworkVideoRepository;
+    private final GradeRepository gradeRepository;
 
     @Inject
-    public HomeworkServiceImpl(final HomeworkRepository homeworkRepository, final HomeworkVideoRepository homeworkVideoRepository)
+    public HomeworkServiceImpl(final HomeworkRepository homeworkRepository,
+                               final HomeworkVideoRepository homeworkVideoRepository,
+                               final GradeRepository gradeRepository)
     {
         this.homeworkRepository = homeworkRepository;
         this.homeworkVideoRepository = homeworkVideoRepository;
+        this.gradeRepository = gradeRepository;
     }
 
     @Override
@@ -43,6 +50,20 @@ public class HomeworkServiceImpl implements HomeworkService
             .stream()
             .map(this::mapToHomeworkDto)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public void uploadHomework(final String userId, final Integer sessionId, final Integer homeworkId, final String url)
+    {
+        final GradeEntity grade = gradeRepository.selectByUserSessionAndHomeworkId(userId, sessionId, homeworkId);
+        if (grade == null)
+        {
+            throw new IllegalArgumentException("No assignment found that accepts this submission");
+        }
+        grade.setSubmissionUrl(url);
+        grade.setSubmitted("true");
+        grade.setUpdatedAt(OffsetDateTime.now());
+        gradeRepository.update(grade);
     }
 
     @Override

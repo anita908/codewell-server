@@ -9,6 +9,7 @@ public interface HomeworkService
 {
     List<HomeworkDto> getHomeworksForCourse(final int courseId);
     List<HomeworkDto> getHomeworksForCourseAndChapter(final int courseId, final int chapterNo);
+    void uploadHomework(final String userId, final Integer sessionId, final Integer homeworkId, final String url);
     List<HomeworkVideoDto> getVideosForHomework(final int homeworkId);
     List<HomeworkVideoDto> getVideosForCourseAndChapter(final int courseId, final int chapterNo);
     List<HomeworkVideoDto> getVideosForCourse(final int courseId);
