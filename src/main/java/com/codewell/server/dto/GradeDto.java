@@ -7,6 +7,7 @@ public class GradeDto
     private Integer id;
     private Integer homeworkId;
     private String homeworkName;
+    private String submissionUrl;
     private Double score;
     private OffsetDateTime dueDate;
     private String submitted = "false";
@@ -39,6 +40,16 @@ public class GradeDto
     public void setHomeworkName(String homeworkName)
     {
         this.homeworkName = homeworkName;
+    }
+
+    public String getSubmissionUrl()
+    {
+        return submissionUrl;
+    }
+
+    public void setSubmissionUrl(String submissionUrl)
+    {
+        this.submissionUrl = submissionUrl;
     }
 
     public Double getScore()

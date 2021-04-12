@@ -59,6 +59,7 @@ public class GradesServiceImpl implements GradesService
             newGrade.setSessionId(session.getId());
             newGrade.setHomework(homework);
             newGrade.setUserId(userId);
+            newGrade.setSubmissionUrl(null);
             newGrade.setScore(null);
             newGrade.setDueAt(null);
             newGrade.setSubmitted("false");
@@ -116,6 +117,7 @@ public class GradesServiceImpl implements GradesService
             throw new IllegalArgumentException(String.format("No enrollment record found for user id: %s and session id: %s", userId, sessionId));
         }
 
+        originalGrade.setSubmissionUrl(gradeDto.getSubmissionUrl());
         originalGrade.setScore(gradeDto.getScore());
         originalGrade.setDueAt(gradeDto.getDueDate());
         originalGrade.setSubmitted(gradeDto.getSubmitted());
@@ -153,6 +155,7 @@ public class GradesServiceImpl implements GradesService
                 {
                     if (!this.containEqualPayloads(gradeDto, gradeEntity))
                     {
+                        gradeEntity.setSubmissionUrl(gradeDto.getSubmissionUrl());
                         gradeEntity.setScore(gradeDto.getScore());
                         gradeEntity.setDueAt(gradeDto.getDueDate());
                         gradeEntity.setSubmitted(gradeDto.getSubmitted());
@@ -193,6 +196,7 @@ public class GradesServiceImpl implements GradesService
         gradeDto.setId(gradeEntity.getId());
         gradeDto.setHomeworkId(gradeEntity.getHomework().getId());
         gradeDto.setHomeworkName(gradeEntity.getHomework().getName());
+        gradeDto.setSubmissionUrl(gradeEntity.getSubmissionUrl());
         gradeDto.setScore(gradeEntity.getScore());
         gradeDto.setDueDate(gradeEntity.getDueAt());
         gradeDto.setSubmitted(gradeEntity.getSubmitted());
@@ -202,6 +206,21 @@ public class GradesServiceImpl implements GradesService
     private boolean containEqualPayloads(final GradeDto gradeDto, final GradeEntity gradeEntity)
     {
         if (!gradeEntity.getId().equals(gradeDto.getId()))
+        {
+            return false;
+        }
+        if (gradeEntity.getSubmissionUrl() != null && gradeDto.getSubmissionUrl() != null)
+        {
+            if (!gradeEntity.getSubmissionUrl().equals(gradeDto.getSubmissionUrl()))
+            {
+                return false;
+            }
+        }
+        else if (gradeEntity.getSubmissionUrl() == null && gradeDto.getSubmissionUrl() != null)
+        {
+            return false;
+        }
+        else if (gradeEntity.getSubmissionUrl() != null && gradeDto.getSubmissionUrl() == null)
         {
             return false;
         }

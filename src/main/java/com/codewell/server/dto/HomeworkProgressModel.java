@@ -9,6 +9,7 @@ public class HomeworkProgressModel
     private String homeworkLink;
     private Double homeworkScore;
     private String submitted = "false";
+    private String submissionUrl;
     private OffsetDateTime dueDate;
 
     public Integer getHomeworkId()
@@ -59,6 +60,16 @@ public class HomeworkProgressModel
     public void setSubmitted(String submitted)
     {
         this.submitted = submitted;
+    }
+
+    public String getSubmissionUrl()
+    {
+        return submissionUrl;
+    }
+
+    public void setSubmissionUrl(String submissionUrl)
+    {
+        this.submissionUrl = submissionUrl;
     }
 
     public OffsetDateTime getDueDate()
