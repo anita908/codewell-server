@@ -9,6 +9,7 @@ public class GradeDto
     private String homeworkName;
     private String submissionUrl;
     private Double score;
+    private String feedback;
     private OffsetDateTime dueDate;
     private String submitted = "false";
 
@@ -60,6 +61,16 @@ public class GradeDto
     public void setScore(Double score)
     {
         this.score = score;
+    }
+
+    public String getFeedback()
+    {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback)
+    {
+        this.feedback = feedback;
     }
 
     public OffsetDateTime getDueDate()

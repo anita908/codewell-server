@@ -28,6 +28,9 @@ public class GradeEntity
     @Column(name = "score")
     private Double score;
 
+    @Column(name = "feedback")
+    private String feedback;
+
     @Column(name = "due_at")
     private OffsetDateTime dueAt;
 
@@ -98,6 +101,16 @@ public class GradeEntity
     public void setScore(Double score)
     {
         this.score = score;
+    }
+
+    public String getFeedback()
+    {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback)
+    {
+        this.feedback = feedback;
     }
 
     public OffsetDateTime getDueAt()

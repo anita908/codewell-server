@@ -61,6 +61,7 @@ public class GradesServiceImpl implements GradesService
             newGrade.setUserId(userId);
             newGrade.setSubmissionUrl(null);
             newGrade.setScore(null);
+            newGrade.setFeedback(null);
             newGrade.setDueAt(null);
             newGrade.setSubmitted("false");
             newGrade.setCreatedAt(currentTime);
@@ -119,6 +120,7 @@ public class GradesServiceImpl implements GradesService
 
         originalGrade.setSubmissionUrl(gradeDto.getSubmissionUrl());
         originalGrade.setScore(gradeDto.getScore());
+        originalGrade.setFeedback(gradeDto.getFeedback());
         originalGrade.setDueAt(gradeDto.getDueDate());
         originalGrade.setSubmitted(gradeDto.getSubmitted());
         originalGrade.setUpdatedAt(OffsetDateTime.now());
@@ -157,6 +159,7 @@ public class GradesServiceImpl implements GradesService
                     {
                         gradeEntity.setSubmissionUrl(gradeDto.getSubmissionUrl());
                         gradeEntity.setScore(gradeDto.getScore());
+                        gradeEntity.setFeedback(gradeDto.getFeedback());
                         gradeEntity.setDueAt(gradeDto.getDueDate());
                         gradeEntity.setSubmitted(gradeDto.getSubmitted());
                         gradeEntity.setUpdatedAt(OffsetDateTime.now());
@@ -198,6 +201,7 @@ public class GradesServiceImpl implements GradesService
         gradeDto.setHomeworkName(gradeEntity.getHomework().getName());
         gradeDto.setSubmissionUrl(gradeEntity.getSubmissionUrl());
         gradeDto.setScore(gradeEntity.getScore());
+        gradeDto.setFeedback(gradeEntity.getFeedback());
         gradeDto.setDueDate(gradeEntity.getDueAt());
         gradeDto.setSubmitted(gradeEntity.getSubmitted());
         return gradeDto;
@@ -221,6 +225,21 @@ public class GradesServiceImpl implements GradesService
             return false;
         }
         else if (gradeEntity.getSubmissionUrl() != null && gradeDto.getSubmissionUrl() == null)
+        {
+            return false;
+        }
+        if (gradeEntity.getFeedback() != null && gradeDto.getFeedback() != null)
+        {
+            if (!gradeEntity.getFeedback().equals(gradeDto.getFeedback()))
+            {
+                return false;
+            }
+        }
+        else if (gradeEntity.getFeedback() == null && gradeDto.getFeedback() != null)
+        {
+            return false;
+        }
+        else if (gradeEntity.getFeedback() != null && gradeDto.getFeedback() == null)
         {
             return false;
         }
