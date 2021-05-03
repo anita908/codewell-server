@@ -8,6 +8,7 @@ import com.codewell.server.persistence.entity.SessionEntity;
 import com.codewell.server.persistence.repository.EnrollmentRepository;
 import com.codewell.server.persistence.repository.GradeRepository;
 import com.codewell.server.persistence.repository.HomeworkRepository;
+import com.codewell.server.persistence.repository.SessionRepository;
 import com.codewell.server.util.DataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,17 +32,20 @@ public class GradesServiceImpl implements GradesService
     private final GradeRepository gradeRepository;
     private final HomeworkRepository homeworkRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final SessionRepository sessionRepository;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GradesServiceImpl.class);
 
     @Inject
     public GradesServiceImpl(final GradeRepository gradeRepository,
                              final HomeworkRepository homeworkRepository,
-                             final EnrollmentRepository enrollmentRepository)
+                             final EnrollmentRepository enrollmentRepository,
+                             final SessionRepository sessionRepository)
     {
         this.gradeRepository = gradeRepository;
         this.homeworkRepository = homeworkRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class GradesServiceImpl implements GradesService
             newGrade.setSubmitted("false");
             newGrade.setCreatedAt(currentTime);
             newGrade.setUpdatedAt(currentTime);
-            LOGGER.info("Inserting new grade into grades table: {}", newGrade.toString());
+            LOGGER.info("Inserting new grade into grades table: {}", newGrade);
             executor.submit(() -> gradeRepository.insert(newGrade));
         });
         executor.shutdown();
@@ -76,15 +80,49 @@ public class GradesServiceImpl implements GradesService
     public List<GradeDto> getGradesForUser(final String userId, final Integer sessionId)
     {
         Assert.hasText(userId, "User id not provided");
-        List<GradeEntity> grades;
-        if (sessionId == null)
+        Assert.notNull(sessionId, "Session id not provided");
+
+        final SessionEntity session = sessionRepository.select(sessionId);
+        if (session == null)
         {
-            grades = gradeRepository.selectByUserId(userId);
+            throw new IllegalArgumentException(String.format("No session found for session id: %s", sessionId));
         }
-        else
+
+        final List<HomeworkEntity> homeworks = homeworkRepository.selectByCourseId(session.getCourse().getId());
+        final List<GradeEntity> grades = gradeRepository.selectByUserAndSession(userId, sessionId);
+        final AtomicBoolean insertedNew = new AtomicBoolean(false);
+
+        homeworks.forEach(homework ->
         {
-            grades = gradeRepository.selectByUserAndSession(userId, sessionId);
+            GradeEntity targetGrade = grades.stream()
+                .filter(grade -> homework.getId().equals(grade.getHomework().getId()))
+                .findFirst()
+                .orElse(null);
+            if (targetGrade == null)
+            {
+                insertedNew.set(true);
+                final GradeEntity newGrade = new GradeEntity();
+                newGrade.setSessionId(sessionId);
+                newGrade.setHomework(homework);
+                newGrade.setUserId(userId);
+                newGrade.setSubmissionUrl(null);
+                newGrade.setScore(null);
+                newGrade.setFeedback(null);
+                newGrade.setDueAt(null);
+                newGrade.setSubmitted("false");
+                final OffsetDateTime currentTime = OffsetDateTime.now();
+                newGrade.setCreatedAt(currentTime);
+                newGrade.setUpdatedAt(currentTime);
+                gradeRepository.insert(newGrade);
+            }
+        });
+
+        if (insertedNew.get())
+        {
+            grades.clear();
+            grades.addAll(gradeRepository.selectByUserAndSession(userId, sessionId));
         }
+
         return grades.stream()
             .map(this::mapToGradeDto)
             .collect(Collectors.toList());

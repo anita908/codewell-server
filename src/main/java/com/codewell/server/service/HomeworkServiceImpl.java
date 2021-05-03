@@ -8,6 +8,8 @@ import com.codewell.server.persistence.entity.HomeworkVideoEntity;
 import com.codewell.server.persistence.repository.GradeRepository;
 import com.codewell.server.persistence.repository.HomeworkRepository;
 import com.codewell.server.persistence.repository.HomeworkVideoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 @Singleton
 public class HomeworkServiceImpl implements HomeworkService
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HomeworkServiceImpl.class);
+
     private final HomeworkRepository homeworkRepository;
     private final HomeworkVideoRepository homeworkVideoRepository;
     private final GradeRepository gradeRepository;
@@ -55,15 +59,37 @@ public class HomeworkServiceImpl implements HomeworkService
     @Override
     public void uploadHomework(final String userId, final Integer sessionId, final Integer homeworkId, final String url)
     {
-        final GradeEntity grade = gradeRepository.selectByUserSessionAndHomeworkId(userId, sessionId, homeworkId);
+        GradeEntity grade = gradeRepository.selectByUserSessionAndHomeworkId(userId, sessionId, homeworkId);
         if (grade == null)
         {
-            throw new IllegalArgumentException("No assignment found that accepts this submission");
+            LOGGER.info("No grade record found for userId: {}, sessionId: {}, and homeworkId: {}. Attempting insertion of new grade record.", userId, sessionId, homeworkId);
+            final HomeworkEntity homework = homeworkRepository.select(homeworkId);
+            if (homework == null)
+            {
+                throw new IllegalArgumentException(String.format("No homework found for homework id: %s", homeworkId));
+            }
+            grade = new GradeEntity();
+            grade.setSessionId(sessionId);
+            grade.setUserId(userId);
+            grade.setSubmissionUrl(url);
+            grade.setScore(null);
+            grade.setFeedback(null);
+            grade.setDueAt(null);
+            grade.setSubmitted("true");
+            final OffsetDateTime currentTime = OffsetDateTime.now();
+            grade.setCreatedAt(currentTime);
+            grade.setUpdatedAt(currentTime);
+            gradeRepository.insert(grade);
+            LOGGER.info("Inserted new grade record with homeworkId: {} into grades table", homeworkId);
         }
-        grade.setSubmissionUrl(url);
-        grade.setSubmitted("true");
-        grade.setUpdatedAt(OffsetDateTime.now());
-        gradeRepository.update(grade);
+        else
+        {
+            grade.setSubmissionUrl(url);
+            grade.setSubmitted("true");
+            grade.setUpdatedAt(OffsetDateTime.now());
+            gradeRepository.update(grade);
+        }
+
     }
 
     @Override

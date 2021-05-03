@@ -160,6 +160,7 @@ public class AdminController
                                     @QueryParam("sessionId") final Integer sessionId)
     {
         Assert.hasText(userId, "User id not provided");
+        Assert.notNull(sessionId, "Session id not provided");
         return gradesService.getGradesForUser(userId, sessionId);
     }
 
