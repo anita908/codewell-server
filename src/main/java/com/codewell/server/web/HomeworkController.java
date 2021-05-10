@@ -9,12 +9,15 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.*;
 import java.util.List;
 
 import static com.codewell.server.config.settings.SwaggerSettings.SWAGGER_AUTH_NAME;
@@ -57,11 +60,11 @@ public class HomeworkController {
     @JwtAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/upload")
-    public Response uploadHomework(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId,
-                                   @QueryParam("sessionId") final Integer sessionId,
-                                   @QueryParam("homeworkId") final Integer homeworkId,
-                                   @QueryParam("url") final String url)
+    @Path("/upload/url")
+    public Response uploadHomeworkUrl(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId,
+                                      @QueryParam("sessionId") final Integer sessionId,
+                                      @QueryParam("homeworkId") final Integer homeworkId,
+                                      @QueryParam("url") final String url)
     {
         Assert.hasText(userId, "User id not provided");
         Assert.notNull(sessionId, "Session id not provided");
@@ -69,6 +72,28 @@ public class HomeworkController {
         Assert.hasText(url, "Url not provided");
 
         homeworkService.uploadHomework(userId, sessionId, homeworkId, url);
+        return Response.status(Response.Status.OK).entity(new GenericResponseDto("Successfully uploaded assignment")).build();
+    }
+
+    @PUT
+    @JwtAuthenticationNeeded
+    @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/upload/file")
+    public Response uploadHomeworkFile(@Parameter(hidden = true) @HeaderParam("Source-User-Id") final String userId,
+                                       @QueryParam("sessionId") final Integer sessionId,
+                                       @QueryParam("homeworkId") final Integer homeworkId,
+                                       @FormDataParam("file") InputStream inputStream,
+                                       @FormDataParam("file") FormDataContentDisposition fileMetaData) throws IOException
+    {
+        Assert.hasText(userId, "User id not provided");
+        Assert.notNull(sessionId, "Session id not provided");
+        Assert.notNull(homeworkId, "Homework id not provided");
+
+        final String[] segments = fileMetaData.getFileName().split("\\.");
+        final String fileType = segments[segments.length - 1];
+        homeworkService.uploadHomework(userId, sessionId, homeworkId, inputStream, fileType);
         return Response.status(Response.Status.OK).entity(new GenericResponseDto("Successfully uploaded assignment")).build();
     }
 

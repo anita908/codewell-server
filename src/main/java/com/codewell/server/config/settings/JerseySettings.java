@@ -11,6 +11,7 @@ import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.inject.Named;
@@ -38,6 +39,7 @@ public class JerseySettings extends ResourceConfig
 
     private void registerControllers()
     {
+        this.register(MultiPartFeature.class);
         this.register(AdminController.class);
         this.register(AuthController.class);
         this.register(ChapterController.class);
