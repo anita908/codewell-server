@@ -113,6 +113,7 @@ public class AdminController
     @PUT
     @AdminAuthenticationNeeded
     @SecurityRequirement(name = SWAGGER_AUTH_NAME)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/enrollment/update")
     public EnrollmentDto updateEnrollment(final EnrollmentDto enrollmentDto)
