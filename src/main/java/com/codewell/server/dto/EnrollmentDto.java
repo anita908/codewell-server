@@ -10,6 +10,7 @@ public class EnrollmentDto
     private OffsetDateTime enrollDate;
     private Integer currentChapter;
     private String graduated;
+    private String withdrawn;
     private Double overallGrade;
 
     public Integer getId()
@@ -70,6 +71,16 @@ public class EnrollmentDto
     public void setGraduated(String graduated)
     {
         this.graduated = graduated;
+    }
+
+    public String getWithdrawn()
+    {
+        return withdrawn;
+    }
+
+    public void setWithdrawn(String withdrawn)
+    {
+        this.withdrawn = withdrawn;
     }
 
     public Double getOverallGrade()

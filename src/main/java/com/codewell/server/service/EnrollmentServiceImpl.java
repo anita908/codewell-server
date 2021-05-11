@@ -91,6 +91,7 @@ public class EnrollmentServiceImpl implements EnrollmentService
         newEnrollment.setEnrollDate(currentTime);
         newEnrollment.setCurrentChapter(1);
         newEnrollment.setGraduated("false");
+        newEnrollment.setWithdrawn("false");
         newEnrollment.setOverallGrade(100.0);
         newEnrollment.setCreatedAt(currentTime);
         newEnrollment.setUpdatedAt(currentTime);
@@ -127,6 +128,7 @@ public class EnrollmentServiceImpl implements EnrollmentService
         existingEnrollment.setEnrollDate(enrollmentDto.getEnrollDate());
         existingEnrollment.setCurrentChapter(enrollmentDto.getCurrentChapter());
         existingEnrollment.setGraduated(enrollmentDto.getGraduated());
+        existingEnrollment.setWithdrawn(enrollmentDto.getWithdrawn());
         existingEnrollment.setOverallGrade(enrollmentDto.getOverallGrade());
         existingEnrollment.setUpdatedAt(OffsetDateTime.now());
         return this.mapToEnrollmentDto(enrollmentRepository.update(existingEnrollment));
@@ -144,8 +146,9 @@ public class EnrollmentServiceImpl implements EnrollmentService
         enrollmentDto.setUserId(enrollmentEntity.getUserId());
         enrollmentDto.setEnrollDate(enrollmentEntity.getEnrollDate());
         enrollmentDto.setCurrentChapter(enrollmentEntity.getCurrentChapter());
-        enrollmentDto.setOverallGrade(enrollmentEntity.getOverallGrade());
         enrollmentDto.setGraduated(enrollmentEntity.getGraduated());
+        enrollmentDto.setWithdrawn(enrollmentEntity.getWithdrawn());
+        enrollmentDto.setOverallGrade(enrollmentEntity.getOverallGrade());
         return enrollmentDto;
     }
 }

@@ -28,6 +28,9 @@ public class EnrollmentEntity
     @Column(name = "graduated")
     private String graduated;
 
+    @Column(name = "withdrawn")
+    private String withdrawn;
+
     @Column(name = "overall_grade")
     private Double overallGrade;
 
@@ -95,6 +98,16 @@ public class EnrollmentEntity
     public void setGraduated(String graduated)
     {
         this.graduated = graduated;
+    }
+
+    public String getWithdrawn()
+    {
+        return withdrawn;
+    }
+
+    public void setWithdrawn(String withdrawn)
+    {
+        this.withdrawn = withdrawn;
     }
 
     public Double getOverallGrade()

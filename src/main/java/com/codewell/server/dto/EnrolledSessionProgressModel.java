@@ -18,6 +18,7 @@ public class EnrolledSessionProgressModel
     private OffsetDateTime endDate;
     private Integer currentChapter;
     private String graduated;
+    private String withdrawn;
     private Double overallGrade;
     private List<ChapterProgressModel> sessionProgressModel = new ArrayList<>();
 
@@ -109,6 +110,16 @@ public class EnrolledSessionProgressModel
     public void setGraduated(String graduated)
     {
         this.graduated = graduated;
+    }
+
+    public String getWithdrawn()
+    {
+        return withdrawn;
+    }
+
+    public void setWithdrawn(String withdrawn)
+    {
+        this.withdrawn = withdrawn;
     }
 
     public Double getOverallGrade()
