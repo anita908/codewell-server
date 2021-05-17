@@ -58,6 +58,7 @@ public class UserLearningModel
             homeworkProgress.setSubmissionUrl(gradeEntity.getSubmissionUrl());
             homeworkProgress.setSubmissionFeedback(gradeEntity.getFeedback());
             homeworkProgress.setDueDate(gradeEntity.getDueAt());
+            homeworkProgress.setSubmissionDate(gradeEntity.getSubmittedAt());
         });
     }
 

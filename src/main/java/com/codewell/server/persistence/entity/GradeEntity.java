@@ -43,6 +43,9 @@ public class GradeEntity
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
+    @Column(name = "submitted_at")
+    private OffsetDateTime submittedAt;
+
     public Integer getId()
     {
         return id;
@@ -151,5 +154,15 @@ public class GradeEntity
     public void setUpdatedAt(OffsetDateTime updatedAt)
     {
         this.updatedAt = updatedAt;
+    }
+
+    public OffsetDateTime getSubmittedAt()
+    {
+        return submittedAt;
+    }
+
+    public void setSubmittedAt(OffsetDateTime submittedAt)
+    {
+        this.submittedAt = submittedAt;
     }
 }

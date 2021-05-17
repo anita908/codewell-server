@@ -12,6 +12,7 @@ public class HomeworkProgressModel
     private String submissionUrl;
     private String submissionFeedback;
     private OffsetDateTime dueDate;
+    private OffsetDateTime submissionDate;
 
     public Integer getHomeworkId()
     {
@@ -91,5 +92,15 @@ public class HomeworkProgressModel
     public void setDueDate(OffsetDateTime dueDate)
     {
         this.dueDate = dueDate;
+    }
+
+    public OffsetDateTime getSubmissionDate()
+    {
+        return submissionDate;
+    }
+
+    public void setSubmissionDate(OffsetDateTime submissionDate)
+    {
+        this.submissionDate = submissionDate;
     }
 }
