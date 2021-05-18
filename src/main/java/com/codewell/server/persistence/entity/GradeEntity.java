@@ -46,8 +46,6 @@ public class GradeEntity
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
-
-
     public Integer getId()
     {
         return id;
