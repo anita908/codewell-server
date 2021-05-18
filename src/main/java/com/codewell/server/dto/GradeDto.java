@@ -84,10 +84,7 @@ public class GradeDto
         this.dueDate = dueDate;
     }
 
-    public String getSubmitted()
-    {
-        return submitted;
-    }
+    public String getSubmitted() { return submitted; }
 
     public void setSubmitted(String submitted)
     {

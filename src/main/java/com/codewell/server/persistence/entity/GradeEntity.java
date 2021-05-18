@@ -37,14 +37,16 @@ public class GradeEntity
     @Column(name = "submitted")
     private String submitted;
 
+    @Column(name = "submitted_at")
+    private OffsetDateTime submittedAt;
+
     @Column(name = "created_at")
     private OffsetDateTime createdAt;
 
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
-    @Column(name = "submitted_at")
-    private OffsetDateTime submittedAt;
+
 
     public Integer getId()
     {
@@ -136,6 +138,16 @@ public class GradeEntity
         this.submitted = submitted;
     }
 
+    public OffsetDateTime getSubmittedAt()
+    {
+        return submittedAt;
+    }
+
+    public void setSubmittedAt(OffsetDateTime submittedAt)
+    {
+        this.submittedAt = submittedAt;
+    }
+
     public OffsetDateTime getCreatedAt()
     {
         return createdAt;
@@ -154,15 +166,5 @@ public class GradeEntity
     public void setUpdatedAt(OffsetDateTime updatedAt)
     {
         this.updatedAt = updatedAt;
-    }
-
-    public OffsetDateTime getSubmittedAt()
-    {
-        return submittedAt;
-    }
-
-    public void setSubmittedAt(OffsetDateTime submittedAt)
-    {
-        this.submittedAt = submittedAt;
     }
 }
