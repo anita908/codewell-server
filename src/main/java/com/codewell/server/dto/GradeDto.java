@@ -12,6 +12,7 @@ public class GradeDto
     private String feedback;
     private OffsetDateTime dueDate;
     private String submitted = "false";
+    private OffsetDateTime submissionDate;
 
     public Integer getId()
     {
@@ -83,13 +84,22 @@ public class GradeDto
         this.dueDate = dueDate;
     }
 
-    public String getSubmitted()
-    {
+    public String getSubmitted() {
         return submitted;
     }
 
     public void setSubmitted(String submitted)
     {
         this.submitted = submitted;
+    }
+
+    public OffsetDateTime getSubmissionDate()
+    {
+        return submissionDate;
+    }
+
+    public void setSubmissionDate(OffsetDateTime submissionDate)
+    {
+        this.submissionDate = submissionDate;
     }
 }

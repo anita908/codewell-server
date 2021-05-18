@@ -83,7 +83,9 @@ public class HomeworkServiceImpl implements HomeworkService
         {
             grade.setSubmissionUrl(url);
             grade.setSubmitted("true");
-            grade.setUpdatedAt(OffsetDateTime.now());
+            OffsetDateTime currentTime = OffsetDateTime.now();
+            grade.setUpdatedAt(currentTime);
+            grade.setSubmittedAt(currentTime);
             gradeRepository.update(grade);
         }
 
@@ -104,7 +106,9 @@ public class HomeworkServiceImpl implements HomeworkService
 
             grade.setSubmissionUrl(url);
             grade.setSubmitted("true");
-            grade.setUpdatedAt(OffsetDateTime.now());
+            OffsetDateTime currentTime = OffsetDateTime.now();
+            grade.setUpdatedAt(currentTime);
+            grade.setSubmittedAt(currentTime);
             gradeRepository.update(grade);
         }
     }

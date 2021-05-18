@@ -70,6 +70,7 @@ public class GradesServiceImpl implements GradesService
             newGrade.setSubmitted("false");
             newGrade.setCreatedAt(currentTime);
             newGrade.setUpdatedAt(currentTime);
+            newGrade.setSubmittedAt(null);
             LOGGER.info("Inserting new grade into grades table: {}", newGrade);
             executor.submit(() -> gradeRepository.insert(newGrade));
         });
@@ -113,6 +114,7 @@ public class GradesServiceImpl implements GradesService
                 final OffsetDateTime currentTime = OffsetDateTime.now();
                 newGrade.setCreatedAt(currentTime);
                 newGrade.setUpdatedAt(currentTime);
+                newGrade.setSubmittedAt(null);
                 gradeRepository.insert(newGrade);
             }
         });
@@ -162,6 +164,7 @@ public class GradesServiceImpl implements GradesService
         originalGrade.setDueAt(gradeDto.getDueDate());
         originalGrade.setSubmitted(gradeDto.getSubmitted());
         originalGrade.setUpdatedAt(OffsetDateTime.now());
+        originalGrade.setSubmittedAt(gradeDto.getSubmissionDate());
         final GradeEntity newGrade = gradeRepository.update(originalGrade);
 
         enrollment.setOverallGrade(this.calculateAverageGrade(originalGrades));
@@ -201,6 +204,7 @@ public class GradesServiceImpl implements GradesService
                         gradeEntity.setDueAt(gradeDto.getDueDate());
                         gradeEntity.setSubmitted(gradeDto.getSubmitted());
                         gradeEntity.setUpdatedAt(OffsetDateTime.now());
+                        gradeEntity.setSubmittedAt(gradeDto.getSubmissionDate());
                         executor.submit(() -> gradeRepository.update(gradeEntity));
                         updated.set(true);
                     }
@@ -242,6 +246,7 @@ public class GradesServiceImpl implements GradesService
         gradeDto.setFeedback(gradeEntity.getFeedback());
         gradeDto.setDueDate(gradeEntity.getDueAt());
         gradeDto.setSubmitted(gradeEntity.getSubmitted());
+        gradeDto.setSubmissionDate(gradeEntity.getSubmittedAt());
         return gradeDto;
     }
 
@@ -308,6 +313,21 @@ public class GradesServiceImpl implements GradesService
             return false;
         }
         else if (gradeEntity.getDueAt() != null && gradeDto.getDueDate() == null)
+        {
+            return false;
+        }
+        if (gradeEntity.getSubmittedAt() != null && gradeDto.getSubmissionDate() != null)
+        {
+            if (!gradeEntity.getSubmittedAt().isEqual(gradeDto.getSubmissionDate()))
+            {
+                return false;
+            }
+        }
+        else if (gradeEntity.getSubmittedAt() == null && gradeDto.getSubmissionDate() != null)
+        {
+            return false;
+        }
+        else if (gradeEntity.getSubmittedAt() != null && gradeDto.getSubmissionDate() == null)
         {
             return false;
         }
